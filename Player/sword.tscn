@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bftwel0dxnj31" path="res://Player/anger(sword).png" id="1_y7ua2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y7ua2"]
-size = Vector2(28, 6)
+size = Vector2(50, 17)
 
 [sub_resource type="Animation" id="Animation_6ov0w"]
 resource_name = "Hit"
@@ -77,7 +77,7 @@ script = ExtResource("1_xucmb")
 script = ExtResource("1_6ov0w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Pivot/SwordArea2D"]
-position = Vector2(12, -1)
+position = Vector2(1, -1.5)
 shape = SubResource("RectangleShape2D_y7ua2")
 disabled = true
 
@@ -94,3 +94,5 @@ texture = ExtResource("1_y7ua2")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(5, 5)
+
+[connection signal="body_entered" from="Pivot/SwordArea2D" to="Pivot/SwordArea2D" method="_on_body_entered"]
