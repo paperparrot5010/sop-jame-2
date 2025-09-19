@@ -195,8 +195,8 @@ position = Vector2(574, 526)
 
 [node name="WaveManager" type="Node" parent="." node_paths=PackedStringArray("spawn_points")]
 script = ExtResource("6_jhl0g")
-spawn_points = [NodePath("../SpawnPoint1"), NodePath("../SpawnPoint2"), NodePath("../SpawnPoint3"), NodePath("../SpawnPoint4"), NodePath("../SpawnPoint5"), NodePath("../SpawnPoint6"), NodePath("../SpawnPoint7"), NodePath("../SpawnPoint8"), NodePath("../SpawnPoint9")]
 enemy_scene = ExtResource("7_58fyy")
+spawn_points = [NodePath("../SpawnPoint1"), NodePath("../SpawnPoint2"), NodePath("../SpawnPoint3"), NodePath("../SpawnPoint4"), NodePath("../SpawnPoint5"), NodePath("../SpawnPoint6"), NodePath("../SpawnPoint7"), NodePath("../SpawnPoint8"), NodePath("../SpawnPoint9")]
 
 [node name="SpawnPoint1" type="Node2D" parent="."]
 position = Vector2(285, 432)
