@@ -6,7 +6,7 @@ extends CharacterBody2D
 
 
 signal died
-@export var speed = 70.0
+@export var speed = 65.0
 @export var health = 1 # Example health
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
@@ -28,8 +28,8 @@ func _ready():
 	else:
 		print("Enemy AI: Player node found: ", player_node.name)
 
-	navigation_agent.path_desired_distance = 20.0
-	navigation_agent.target_desired_distance = 20.0
+	navigation_agent.path_desired_distance = 4.0
+	navigation_agent.target_desired_distance = 4.0
 
 	# Initialize original_scale based on the actual sprite scale if it\"s not 1.0, 1.0
 	# For now, we\"ll assume 1.0, 1.0 as a placeholder or you can set it in the editor.
@@ -40,9 +40,11 @@ func _physics_process(_delta: float) -> void:
 
 
 	if can_attackanim == true :
+		velocity = Vector2(0,0)
 		animated_sprite_2d.play("Attack")
 	if can_attackanim == false :
 		animated_sprite_2d.play("Run")
+		
 
 
 	if player_node.global_position.x < global_position.x:
@@ -116,9 +118,12 @@ func _on_damage_timer_timeout(body: Node2D) -> void:
 
 func _on_area_2d_body_exited(body: Node2D) -> void:
 	if body.is_in_group("PlayerGroup"):
+		animation_timer.start()
 		damage_timer.stop()
+		await animation_timer.timeout
+		can_attackanim = false
 		if damage_timer.is_connected("timeout", _on_damage_timer_timeout):
 			damage_timer.disconnect("timeout", _on_damage_timer_timeout)
-		can_attackanim = false
-		animation_timer.start()
-		await animation_timer.timeout
+		
+		
+		

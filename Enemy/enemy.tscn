@@ -62,8 +62,8 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_px1sc"]
-radius = 21.0
-height = 94.0
+radius = 28.0
+height = 110.0
 
 [node name="Enemy" type="CharacterBody2D" groups=["EnemyGroup"]]
 scale = Vector2(0.5, 0.5)
