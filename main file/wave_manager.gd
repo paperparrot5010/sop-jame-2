@@ -18,7 +18,24 @@ var break_active: bool = false
 var wave_data = [
 	{"wave_number": 1, "enemy_count": 5, "spawn_interval": 1.0, "break_duration": 5.0},
 	{"wave_number": 2, "enemy_count": 10, "spawn_interval": 0.8, "break_duration": 7.0},
-	{"wave_number": 3, "enemy_count": 15, "spawn_interval": 0.6, "break_duration": 10.0}
+	{"wave_number": 3, "enemy_count": 15, "spawn_interval": 0.6, "break_duration": 10.0},
+	{"wave_number": 4, "enemy_count": 20, "spawn_interval": 0.5, "break_duration": 10.0},
+	{"wave_number": 5, "enemy_count": 25, "spawn_interval": 0.4, "break_duration": 12.0},
+	{"wave_number": 6, "enemy_count": 30, "spawn_interval": 0.4, "break_duration": 12.0},
+	{"wave_number": 7, "enemy_count": 35, "spawn_interval": 0.35, "break_duration": 12.0},
+	{"wave_number": 8, "enemy_count": 40, "spawn_interval": 0.35, "break_duration": 15.0},
+	{"wave_number": 9, "enemy_count": 45, "spawn_interval": 0.3, "break_duration": 15.0},
+	{"wave_number": 10, "enemy_count": 50, "spawn_interval": 0.3, "break_duration": 15.0},
+	{"wave_number": 11, "enemy_count": 55, "spawn_interval": 0.25, "break_duration": 15.0},
+	{"wave_number": 12, "enemy_count": 60, "spawn_interval": 0.25, "break_duration": 18.0},
+	{"wave_number": 13, "enemy_count": 65, "spawn_interval": 0.2, "break_duration": 18.0},
+	{"wave_number": 14, "enemy_count": 70, "spawn_interval": 0.2, "break_duration": 18.0},
+	{"wave_number": 15, "enemy_count": 75, "spawn_interval": 0.15, "break_duration": 20.0},
+	{"wave_number": 16, "enemy_count": 80, "spawn_interval": 0.15, "break_duration": 20.0},
+	{"wave_number": 17, "enemy_count": 85, "spawn_interval": 0.1, "break_duration": 20.0},
+	{"wave_number": 18, "enemy_count": 90, "spawn_interval": 0.1, "break_duration": 20.0},
+	{"wave_number": 19, "enemy_count": 95, "spawn_interval": 0.08, "break_duration": 20.0},
+	{"wave_number": 20, "enemy_count": 100, "spawn_interval": 0.05, "break_duration": 20.0}
 ]
 
 @onready var spawn_timer: Timer = Timer.new()
