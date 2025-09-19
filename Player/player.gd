@@ -1,7 +1,7 @@
 extends CharacterBody2D
 var bullet_path = preload("res://Player/bullet2.tscn")
 var speed = 200
-
+@export var health = 10
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 
 # Animation variables
@@ -67,3 +67,12 @@ func fire():
 	bullet.pos = $Node2D.global_position
 	bullet.rota = global_rotation
 	get_parent().add_child(bullet)
+func player_death():
+	queue_free()
+	
+func player_takes_damage(amount):
+	health -= amount
+	print (health)
+	if health <= 0:
+		player_death()
+	

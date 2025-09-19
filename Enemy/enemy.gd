@@ -1,10 +1,10 @@
 extends CharacterBody2D
-
+signal died
 @export var speed = 70.0
 @export var health = 1 # Example health
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
-
+@export var damage_amount = 1
 var player_node: Node2D = null
 var crystal_scene = preload("res://Collectabel objects/crystal.tscn")
 
@@ -72,11 +72,12 @@ func _physics_process(_delta: float) -> void:
 
 func take_damage(amount):
 	health -= amount
-	print("Enemy took ", amount, " damage. Health: ", health)
+	#print("Enemy took ", amount, " damage. Health: ", health)
 	if health <= 0:
 		die()
 
 func die():
+	died.emit()
 	print("Enemy died!")
 	drop_crystal()
 	queue_free()
@@ -85,3 +86,8 @@ func drop_crystal():
 	var crystal_instance = crystal_scene.instantiate()
 	get_parent().add_child(crystal_instance)
 	crystal_instance.global_position = global_position
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.is_in_group("PlayerGroup"):
+		body.player_takes_damage(1)

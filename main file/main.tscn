@@ -1,10 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://bxhodc2rh8n7a"]
+[gd_scene load_steps=12 format=3 uid="uid://bxhodc2rh8n7a"]
 
 [ext_resource type="Texture2D" uid="uid://b6qr7q7jrj7ek" path="res://Foozle_2DS0015_Void_EnvironmentPack/Backgrounds/PNGs/Condesed/Starry background  - Layer 01 - Void.png" id="1_ewnu2"]
 [ext_resource type="PackedScene" uid="uid://okmrywtn40ld" path="res://Player/player.tscn" id="2_p4uik"]
 [ext_resource type="PackedScene" uid="uid://cxrn4gkrven02" path="res://border.tscn" id="4_0na6d"]
 [ext_resource type="PackedScene" uid="uid://c3810o6p03cq4" path="res://Machine/unstable_machine.tscn" id="4_ewnu2"]
 [ext_resource type="Texture2D" uid="uid://b2cojfocs1h1o" path="res://Environment/Grass.png" id="4_sd6jy"]
+[ext_resource type="Script" uid="uid://d0s27vfeyldq1" path="res://main file/wave_manager.gd" id="6_jhl0g"]
+[ext_resource type="PackedScene" uid="uid://b0bc4nfc0uumy" path="res://Enemy/enemy.tscn" id="7_58fyy"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_sd6jy"]
 vertices = PackedVector2Array(6.0625, -1.96094, 1138.89, 1.96094, 737.641, 117.969, 409.93, 119, 11.9219, 856.609, 393.781, 433.969, 1157.57, 812.391, 719.648, 406.773, 1135.15, 372.109, 1138.46, 371.828)
@@ -173,6 +175,7 @@ scale = Vector2(0.752951, 8.27222)
 texture = ExtResource("1_ewnu2")
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+visible = false
 navigation_polygon = SubResource("NavigationPolygon_sd6jy")
 
 [node name="TileMap" type="TileMap" parent="."]
@@ -188,4 +191,36 @@ layer_0/tile_data = PackedInt32Array(196609, 131072, 1, 262145, 131072, 1, 32768
 position = Vector2(578, 414)
 
 [node name="Player" parent="." instance=ExtResource("2_p4uik")]
-position = Vector2(698, 524)
+position = Vector2(574, 526)
+
+[node name="WaveManager" type="Node" parent="." node_paths=PackedStringArray("spawn_points")]
+script = ExtResource("6_jhl0g")
+spawn_points = [NodePath("../SpawnPoint1"), NodePath("../SpawnPoint2"), NodePath("../SpawnPoint3"), NodePath("../SpawnPoint4"), NodePath("../SpawnPoint5"), NodePath("../SpawnPoint6"), NodePath("../SpawnPoint7"), NodePath("../SpawnPoint8"), NodePath("../SpawnPoint9")]
+enemy_scene = ExtResource("7_58fyy")
+
+[node name="SpawnPoint1" type="Node2D" parent="."]
+position = Vector2(285, 432)
+
+[node name="SpawnPoint2" type="Node2D" parent="."]
+position = Vector2(349, 321)
+
+[node name="SpawnPoint3" type="Node2D" parent="."]
+position = Vector2(267, 346)
+
+[node name="SpawnPoint4" type="Node2D" parent="."]
+position = Vector2(798, 318)
+
+[node name="SpawnPoint5" type="Node2D" parent="."]
+position = Vector2(871, 434)
+
+[node name="SpawnPoint6" type="Node2D" parent="."]
+position = Vector2(914, 340)
+
+[node name="SpawnPoint7" type="Node2D" parent="."]
+position = Vector2(537, 188)
+
+[node name="SpawnPoint8" type="Node2D" parent="."]
+position = Vector2(631, 188)
+
+[node name="SpawnPoint9" type="Node2D" parent="."]
+position = Vector2(586, 128)
