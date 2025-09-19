@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
-signal player_died # Signal to announce the player's death
+signal player_died # Signal to announce the player\'s death
+signal health_changed(new_health: int) # Signal to announce health changes in player health
 
 var bullet_path = preload("res://Player/bullet2.tscn")
 var speed = 200
@@ -65,9 +66,10 @@ func fire():
 	get_parent().add_child(bullet)
 
 func player_takes_damage(amount):
-	if health <= 0: # Don't take more damage if already dead
+	if health <= 0: # Don\'t take more damage if already dead
 		return
 	health -= amount
+	emit_signal("health_changed", health)
 	print("Player health: ", health)
 	if health <= 0:
 		player_death()

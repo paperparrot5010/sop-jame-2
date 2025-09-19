@@ -5,10 +5,17 @@ extends CanvasLayer
 var shake_tween: Tween
 var is_shaking: bool = false
 var original_label_position: Vector2
+@onready var label_2: Label = $Label2
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	label.text = str(time_left)
+	var player_node = get_tree().get_first_node_in_group("PlayerGroup")
+	if player_node:
+		player_node.health_changed.connect(_on_player_health_changed)
+		label.text = "Health: " + str(player_node.health)
+	else:
+		label.text = "Health: N/A"
+	
 	original_label_position = label.position # Store the original position
 	
 	shake_tween = create_tween()
@@ -16,9 +23,9 @@ func _ready() -> void:
 	# Define the shake animation: move to random position relative to original, then back to original
 	shake_tween.tween_property(label, "position", original_label_position + Vector2(randf_range(-5, 5), randf_range(-5, 5)), 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	shake_tween.tween_property(label, "position", original_label_position, 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	shake_tween.stop() # Initially stop the tween, so it doesn't play until needed
+	shake_tween.stop() # Initially stop the tween, so it doesn\'t play until needed
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+# Called every frame. \'delta\' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if time_left <= 5:
 		# Change text color to red
@@ -40,3 +47,6 @@ func _process(delta: float) -> void:
 func _on_timer_fortime_left_timeout() -> void:
 	time_left = max(0, time_left - 1) # Clamp time_left at 0
 	label.text = str(time_left)
+
+func _on_player_health_changed(new_health: int) -> void:
+	label_2.text = "Health: " + str(new_health)

@@ -28,8 +28,8 @@ func _ready():
 	else:
 		print("Enemy AI: Player node found: ", player_node.name)
 
-	navigation_agent.path_desired_distance = 4.0
-	navigation_agent.target_desired_distance = 4.0
+	navigation_agent.path_desired_distance = 20.0
+	navigation_agent.target_desired_distance = 20.0
 
 	# Initialize original_scale based on the actual sprite scale if it\"s not 1.0, 1.0
 	# For now, we\"ll assume 1.0, 1.0 as a placeholder or you can set it in the editor.
@@ -102,15 +102,23 @@ func drop_crystal():
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	if body.is_in_group("PlayerGroup"):
-		damage_timer.start()
 		can_attackanim = true
-		await damage_timer.timeout
-		body.player_takes_damage(1)
+		damage_timer.start()
+		if not damage_timer.is_connected("timeout", _on_damage_timer_timeout):
+			damage_timer.connect("timeout", _on_damage_timer_timeout.bind(body))
+
+func _on_damage_timer_timeout(body: Node2D) -> void:
+	if body.is_in_group("PlayerGroup"):
+		body.player_takes_damage(damage_amount)
+		print("Player took damage!")
 
 
 
 func _on_area_2d_body_exited(body: Node2D) -> void:
 	if body.is_in_group("PlayerGroup"):
+		damage_timer.stop()
+		if damage_timer.is_connected("timeout", _on_damage_timer_timeout):
+			damage_timer.disconnect("timeout", _on_damage_timer_timeout)
+		can_attackanim = false
 		animation_timer.start()
 		await animation_timer.timeout
-		can_attackanim = false

@@ -15,8 +15,16 @@ offset_right = 44.5
 offset_bottom = 117.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 40
+text = "40"
 
 [node name="TimerFortimeLeft" type="Timer" parent="."]
 autostart = true
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 51.0
+offset_right = 97.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 40
+text = "10"
 
 [connection signal="timeout" from="TimerFortimeLeft" to="." method="_on_timer_fortime_left_timeout"]
