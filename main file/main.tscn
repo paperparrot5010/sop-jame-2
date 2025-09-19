@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bxhodc2rh8n7a"]
+[gd_scene load_steps=16 format=3 uid="uid://bxhodc2rh8n7a"]
 
 [ext_resource type="Texture2D" uid="uid://b6qr7q7jrj7ek" path="res://Foozle_2DS0015_Void_EnvironmentPack/Backgrounds/PNGs/Condesed/Starry background  - Layer 01 - Void.png" id="1_ewnu2"]
 [ext_resource type="PackedScene" uid="uid://okmrywtn40ld" path="res://Player/player.tscn" id="2_p4uik"]
@@ -167,6 +167,59 @@ texture_region_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_ewnu2")
 sources/1 = SubResource("TileSetAtlasSource_sd6jy")
 
+[sub_resource type="Animation" id="Animation_qxj3t"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RichTextLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_wiugq"]
+resource_name = "Fade_to_vanish"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RichTextLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_77iqx"]
+resource_name = "Fade_to_normal"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RichTextLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0666667, 0.466667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7rtee"]
+_data = {
+&"Fade_to_normal": SubResource("Animation_77iqx"),
+&"Fade_to_vanish": SubResource("Animation_wiugq"),
+&"RESET": SubResource("Animation_qxj3t")
+}
+
 [node name="Main" type="Node2D"]
 
 [node name="StarryBackground-Layer01-Void" type="Sprite2D" parent="."]
@@ -224,3 +277,29 @@ position = Vector2(631, 188)
 
 [node name="SpawnPoint9" type="Node2D" parent="."]
 position = Vector2(586, 128)
+
+[node name="CanvasLayer(wave no)" type="CanvasLayer" parent="."]
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer(wave no)"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -78.0
+offset_top = -27.5
+offset_right = 78.0
+offset_bottom = 27.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[shake]Wave 1"
+fit_content = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer(wave no)"]
+libraries = {
+&"": SubResource("AnimationLibrary_7rtee")
+}
+
+[node name="Timer" type="Timer" parent="CanvasLayer(wave no)"]

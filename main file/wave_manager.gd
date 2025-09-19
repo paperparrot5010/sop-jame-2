@@ -1,5 +1,8 @@
 extends Node
-
+@onready var rich_text_label: RichTextLabel = $"../CanvasLayer(wave no)/RichTextLabel"
+@onready var animation_player: AnimationPlayer = $"../CanvasLayer(wave no)/AnimationPlayer"
+@onready var timer: Timer = $"../CanvasLayer(wave no)/Timer"
+var no_of_wave = 1
 @export var enemy_scene: PackedScene
 @export var spawn_points: Array[Node2D]
 
@@ -39,10 +42,16 @@ func _ready() -> void:
 	start_next_wave()
 
 func start_next_wave() -> void:
+	rich_text_label.text = "Wave: " + str(no_of_wave)
+	timer.start()
+	animation_player.play("Fade_to_normal")
+	await timer.timeout
+	animation_player.play("Fade_to_vanish")
 	current_wave += 1
 	if current_wave > wave_data.size():
 		print("All waves completed!")
 		return
+		
 
 	var wave_info = wave_data[current_wave - 1]
 	enemies_spawned_in_wave = 0
@@ -53,6 +62,7 @@ func start_next_wave() -> void:
 	print("Starting Wave ", current_wave)
 	spawn_timer.wait_time = wave_info["spawn_interval"]
 	spawn_timer.start()
+	no_of_wave += 1
 
 func _on_spawn_timer_timeout() -> void:
 	if enemies_spawned_in_wave < wave_data[current_wave - 1]["enemy_count"]:
