@@ -1,0 +1,96 @@
+[gd_scene load_steps=8 format=3 uid="uid://cubvmosq7q1tg"]
+
+[ext_resource type="Script" uid="uid://b0taq8m3tij0j" path="res://Player/sword_area_2d.gd" id="1_6ov0w"]
+[ext_resource type="Script" uid="uid://8m0gxpy3a6uq" path="res://Player/pivot.gd" id="1_xucmb"]
+[ext_resource type="Texture2D" uid="uid://bftwel0dxnj31" path="res://Player/anger(sword).png" id="1_y7ua2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y7ua2"]
+size = Vector2(28, 6)
+
+[sub_resource type="Animation" id="Animation_6ov0w"]
+resource_name = "Hit"
+length = 0.45
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = false
+tracks/0/path = NodePath("Sword scene/Pivot/SwordArea2D/CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.16, 0.29, 0.333333, 0.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [true, false, false, true, true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath("Sword scene/Pivot/SwordArea2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.327218, 0.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-40, 0), Vector2(75, 0), Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_xucmb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sword scene/Pivot/SwordArea2D/CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sword scene/Pivot/SwordArea2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ytblt"]
+_data = {
+&"Hit": SubResource("Animation_6ov0w"),
+&"RESET": SubResource("Animation_xucmb")
+}
+
+[node name="Sword scene" type="Node2D"]
+
+[node name="Pivot" type="Node2D" parent="."]
+script = ExtResource("1_xucmb")
+
+[node name="SwordArea2D" type="Area2D" parent="Pivot"]
+script = ExtResource("1_6ov0w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Pivot/SwordArea2D"]
+position = Vector2(12, -1)
+shape = SubResource("RectangleShape2D_y7ua2")
+disabled = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Pivot/SwordArea2D"]
+root_node = NodePath("../../../..")
+libraries = {
+&"": SubResource("AnimationLibrary_ytblt")
+}
+
+[node name="Anger(sword)" type="Sprite2D" parent="Pivot/SwordArea2D"]
+rotation = 1.5708
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_y7ua2")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(5, 5)
