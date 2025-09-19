@@ -3,6 +3,9 @@ extends Node
 @export var enemy_scene: PackedScene
 @export var spawn_points: Array[Node2D]
 
+# Preload the losing menu scene for efficiency
+var losing_menu_scene = preload("res://texts/losing_menu.tscn")
+
 var current_wave: int = 0
 var enemies_spawned_in_wave: int = 0
 var enemies_remaining_in_wave: int = 0
@@ -26,7 +29,6 @@ func _ready() -> void:
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	break_timer.timeout.connect(_on_break_timer_timeout)
 
-	# Wait a frame for the scene to be fully ready, then find the player
 	await get_tree().create_timer(0.01).timeout
 	player_node = get_tree().get_first_node_in_group("PlayerGroup")
 	if is_instance_valid(player_node):
@@ -37,9 +39,6 @@ func _ready() -> void:
 	start_next_wave()
 
 func start_next_wave() -> void:
-	# This check was removed to allow the initial wave to start.
-	# The game over state is now handled by _on_player_died stopping timers.
-	
 	current_wave += 1
 	if current_wave > wave_data.size():
 		print("All waves completed!")
@@ -94,7 +93,8 @@ func _on_break_timer_timeout() -> void:
 	start_next_wave()
 
 func _on_player_died() -> void:
-	print("Player died! Game Over.")
+	var menu_instance = losing_menu_scene.instantiate()
+	add_child(menu_instance)
 	# Stop all spawning
 	spawn_timer.stop()
 	break_timer.stop()
@@ -103,3 +103,10 @@ func _on_player_died() -> void:
 
 	# Remove all existing enemies
 	get_tree().call_group("EnemyGroup", "queue_free")
+
+	# --- NEW CODE TO SHOW LOSING MENU ---
+	# Wait a very short moment to ensure everything is processed,
+	# then add the losing menu.
+	await get_tree().create_timer(0.5).timeout
+
+	# --- END OF NEW CODE ---

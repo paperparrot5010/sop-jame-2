@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://54pn0347n46u"]
+[gd_scene load_steps=2 format=3 uid="uid://54pn0347n46u"]
+
+[ext_resource type="Script" uid="uid://c5htwgqxakysv" path="res://texts/losing_menu.gd" id="1_tgti4"]
 
 [node name="Losing menu" type="CanvasLayer"]
+script = ExtResource("1_tgti4")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 anchors_preset = 8
@@ -34,3 +37,5 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 40
 text = "Retry"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

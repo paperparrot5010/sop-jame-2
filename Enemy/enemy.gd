@@ -1,4 +1,10 @@
 extends CharacterBody2D
+
+@onready var animation_timer: Timer = $"animation Timer"
+
+@onready var damage_timer: Timer = $"damage timer"
+
+
 signal died
 @export var speed = 70.0
 @export var health = 1 # Example health
@@ -7,7 +13,7 @@ signal died
 @export var damage_amount = 1
 var player_node: Node2D = null
 var crystal_scene = preload("res://Collectabel objects/crystal.tscn")
-
+var can_attackanim:bool = false
 # Animation variables
 var original_scale = Vector2(3.0, 3.0) # Corrected default scale for enemy
 var moving_animation_speed = 0.75 # Adjusted speed of the squish/stretch animation when moving (slower)
@@ -31,7 +37,13 @@ func _ready():
 	# original_scale = animated_sprite_2d.scale
 
 func _physics_process(_delta: float) -> void:
-	animated_sprite_2d.play("Run")
+
+
+	if can_attackanim == true :
+		animated_sprite_2d.play("Attack")
+	if can_attackanim == false :
+		animated_sprite_2d.play("Run")
+
 
 	if player_node.global_position.x < global_position.x:
 		animated_sprite_2d.flip_h = false
@@ -90,4 +102,15 @@ func drop_crystal():
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	if body.is_in_group("PlayerGroup"):
+		damage_timer.start()
+		can_attackanim = true
+		await damage_timer.timeout
 		body.player_takes_damage(1)
+
+
+
+func _on_area_2d_body_exited(body: Node2D) -> void:
+	if body.is_in_group("PlayerGroup"):
+		animation_timer.start()
+		await animation_timer.timeout
+		can_attackanim = false
