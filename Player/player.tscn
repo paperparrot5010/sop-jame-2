@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://okmrywtn40ld"]
+[gd_scene load_steps=10 format=3 uid="uid://okmrywtn40ld"]
 
 [ext_resource type="Script" uid="uid://dtk1oas6y7lbo" path="res://Player/player.gd" id="1_4ntmi"]
 [ext_resource type="Texture2D" uid="uid://cx5752bo22o82" path="res://Player/angre(idle).png" id="2_4ntmi"]
 [ext_resource type="PackedScene" uid="uid://cubvmosq7q1tg" path="res://Player/sword.tscn" id="3_btcbx"]
+[ext_resource type="PackedScene" uid="uid://cyuy8pt16hn1n" path="res://texts/canvas_layer.tscn" id="4_gwnis"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_btcbx"]
 atlas = ExtResource("2_4ntmi")
@@ -51,6 +52,9 @@ position = Vector2(18, 0)
 shape = SubResource("CapsuleShape2D_4ntmi")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(1.2, 1.2)
 
 [node name="Sword scene" parent="." instance=ExtResource("3_btcbx")]
 position = Vector2(0, 13)
+
+[node name="CanvasLayer" parent="." instance=ExtResource("4_gwnis")]

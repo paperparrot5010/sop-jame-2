@@ -1,0 +1,137 @@
+[gd_scene load_steps=20 format=3 uid="uid://c3810o6p03cq4"]
+
+[ext_resource type="Script" uid="uid://b3ep8rtxbv0sl" path="res://static_body_2d.gd" id="1_ocn6s"]
+[ext_resource type="Texture2D" uid="uid://iv50hrpl56ki" path="res://Machine/basic furnace turning on.png" id="2_1qe7b"]
+[ext_resource type="Texture2D" uid="uid://epe6qq0s2rao" path="res://Machine/basic furnace working.png" id="3_1qe7b"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ogju5"]
+atlas = ExtResource("2_1qe7b")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wo3ye"]
+atlas = ExtResource("2_1qe7b")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oxw2b"]
+atlas = ExtResource("2_1qe7b")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e6ii5"]
+atlas = ExtResource("2_1qe7b")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_44rrd"]
+atlas = ExtResource("2_1qe7b")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r7s7k"]
+atlas = ExtResource("3_1qe7b")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_01rrt"]
+atlas = ExtResource("3_1qe7b")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vpqu2"]
+atlas = ExtResource("3_1qe7b")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8mr84"]
+atlas = ExtResource("3_1qe7b")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_73pgr"]
+atlas = ExtResource("3_1qe7b")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8f504"]
+atlas = ExtResource("3_1qe7b")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xerdu"]
+atlas = ExtResource("3_1qe7b")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wccoj"]
+atlas = ExtResource("3_1qe7b")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_r7s7k"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ogju5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wo3ye")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oxw2b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e6ii5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_44rrd")
+}],
+"loop": false,
+"name": &"Opening",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r7s7k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_01rrt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vpqu2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8mr84")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_73pgr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8f504")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xerdu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wccoj")
+}],
+"loop": true,
+"name": &"Working",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_01rrt"]
+radius = 12.0
+height = 40.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1qe7b"]
+radius = 28.0903
+
+[node name="Unstable machine" type="StaticBody2D"]
+scale = Vector2(4, 4)
+script = ExtResource("1_ocn6s")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_r7s7k")
+animation = &"Working"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8)
+shape = SubResource("CapsuleShape2D_01rrt")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -9.25)
+shape = SubResource("CircleShape2D_1qe7b")
+debug_color = Color(0.876151, 0.000411614, 0.833656, 0.42)
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

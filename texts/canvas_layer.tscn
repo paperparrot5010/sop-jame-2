@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyuy8pt16hn1n"]
+
+[ext_resource type="Script" uid="uid://c6vc61ni6pooy" path="res://canvas_layer.gd" id="1_7idcw"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource("1_7idcw")
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -44.5
+offset_top = 62.0
+offset_right = 44.5
+offset_bottom = 117.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 40
+
+[node name="TimerFortimeLeft" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="TimerFortimeLeft" to="." method="_on_timer_fortime_left_timeout"]
