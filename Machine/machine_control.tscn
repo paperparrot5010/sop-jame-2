@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://rk0f6cph786g"]
+
+[ext_resource type="Texture2D" uid="uid://b3covqjsvgkfx" path="res://texts/Big Icon.png" id="1_wnoli"]
+
+[node name="machine control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BigIcon" type="Sprite2D" parent="."]
+position = Vector2(571, 325)
+texture = ExtResource("1_wnoli")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 415.0
+offset_top = 477.0
+offset_right = 550.0
+offset_bottom = 528.0
+text = "Stabilize"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 577.0
+offset_top = 485.0
+offset_right = 839.0
+offset_bottom = 521.0
+theme_override_font_sizes/font_size = 17
+text = "Costs 10 stabilizing crystals"
+
+[node name="Label2" type="Label" parent="." groups=["ControlGroup"]]
+layout_mode = 0
+offset_left = 402.0
+offset_top = 198.0
+offset_right = 783.0
+offset_bottom = 267.0
+theme_override_font_sizes/font_size = 50
+text = "10 crystals = 5%"

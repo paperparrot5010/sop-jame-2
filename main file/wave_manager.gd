@@ -14,40 +14,55 @@ var enemies_spawned_in_wave: int = 0
 var enemies_remaining_in_wave: int = 0
 var wave_active: bool = false
 var break_active: bool = false
+var wave_ended_by_timeout: bool = false  # Track if wave ended by timeout
 
+# Add signals for wave events
+signal wave_started(wave_duration)
+signal wave_time_updated(remaining_time)
+signal wave_ended
+
+# Add wave duration to each wave (in seconds) - reduced by 1 second each
+# Add wave duration to each wave (in seconds) - original durations
 var wave_data = [
-	{"wave_number": 1, "enemy_count": 5, "spawn_interval": 1.0, "break_duration": 5.0},
-	{"wave_number": 2, "enemy_count": 10, "spawn_interval": 0.8, "break_duration": 7.0},
-	{"wave_number": 3, "enemy_count": 15, "spawn_interval": 0.6, "break_duration": 10.0},
-	{"wave_number": 4, "enemy_count": 20, "spawn_interval": 0.5, "break_duration": 10.0},
-	{"wave_number": 5, "enemy_count": 25, "spawn_interval": 0.4, "break_duration": 12.0},
-	{"wave_number": 6, "enemy_count": 30, "spawn_interval": 0.4, "break_duration": 12.0},
-	{"wave_number": 7, "enemy_count": 35, "spawn_interval": 0.35, "break_duration": 12.0},
-	{"wave_number": 8, "enemy_count": 40, "spawn_interval": 0.35, "break_duration": 15.0},
-	{"wave_number": 9, "enemy_count": 45, "spawn_interval": 0.3, "break_duration": 15.0},
-	{"wave_number": 10, "enemy_count": 50, "spawn_interval": 0.3, "break_duration": 15.0},
-	{"wave_number": 11, "enemy_count": 55, "spawn_interval": 0.25, "break_duration": 15.0},
-	{"wave_number": 12, "enemy_count": 60, "spawn_interval": 0.25, "break_duration": 18.0},
-	{"wave_number": 13, "enemy_count": 65, "spawn_interval": 0.2, "break_duration": 18.0},
-	{"wave_number": 14, "enemy_count": 70, "spawn_interval": 0.2, "break_duration": 18.0},
-	{"wave_number": 15, "enemy_count": 75, "spawn_interval": 0.15, "break_duration": 20.0},
-	{"wave_number": 16, "enemy_count": 80, "spawn_interval": 0.15, "break_duration": 20.0},
-	{"wave_number": 17, "enemy_count": 85, "spawn_interval": 0.1, "break_duration": 20.0},
-	{"wave_number": 18, "enemy_count": 90, "spawn_interval": 0.1, "break_duration": 20.0},
-	{"wave_number": 19, "enemy_count": 95, "spawn_interval": 0.08, "break_duration": 20.0},
-	{"wave_number": 20, "enemy_count": 100, "spawn_interval": 0.05, "break_duration": 20.0}
+	{"wave_number": 1, "enemy_count": 5, "spawn_interval": 1.0, "break_duration": 5.0, "wave_duration": 20.0},
+	{"wave_number": 2, "enemy_count": 10, "spawn_interval": 0.8, "break_duration": 7.0, "wave_duration": 30.0},
+	{"wave_number": 3, "enemy_count": 15, "spawn_interval": 0.6, "break_duration": 10.0, "wave_duration": 40.0},
+	{"wave_number": 4, "enemy_count": 20, "spawn_interval": 0.5, "break_duration": 10.0, "wave_duration": 50.0},
+	{"wave_number": 5, "enemy_count": 25, "spawn_interval": 0.4, "break_duration": 12.0, "wave_duration": 60.0},
+	{"wave_number": 6, "enemy_count": 30, "spawn_interval": 0.4, "break_duration": 12.0, "wave_duration": 70.0},
+	{"wave_number": 7, "enemy_count": 35, "spawn_interval": 0.35, "break_duration": 12.0, "wave_duration": 80.0},
+	{"wave_number": 8, "enemy_count": 40, "spawn_interval": 0.35, "break_duration": 15.0, "wave_duration": 90.0},
+	{"wave_number": 9, "enemy_count": 45, "spawn_interval": 0.3, "break_duration": 15.0, "wave_duration": 100.0},
+	{"wave_number": 10, "enemy_count": 50, "spawn_interval": 0.3, "break_duration": 15.0, "wave_duration": 110.0},
+	{"wave_number": 11, "enemy_count": 55, "spawn_interval": 0.25, "break_duration": 15.0, "wave_duration": 120.0},
+	{"wave_number": 12, "enemy_count": 60, "spawn_interval": 0.25, "break_duration": 18.0, "wave_duration": 130.0},
+	{"wave_number": 13, "enemy_count": 65, "spawn_interval": 0.2, "break_duration": 18.0, "wave_duration": 140.0},
+	{"wave_number": 14, "enemy_count": 70, "spawn_interval": 0.2, "break_duration": 18.0, "wave_duration": 150.0},
+	{"wave_number": 15, "enemy_count": 75, "spawn_interval": 0.15, "break_duration": 20.0, "wave_duration": 160.0},
+	{"wave_number": 16, "enemy_count": 80, "spawn_interval": 0.15, "break_duration": 20.0, "wave_duration": 170.0},
+	{"wave_number": 17, "enemy_count": 85, "spawn_interval": 0.1, "break_duration": 20.0, "wave_duration": 180.0},
+	{"wave_number": 18, "enemy_count": 90, "spawn_interval": 0.1, "break_duration": 20.0, "wave_duration": 190.0},
+	{"wave_number": 19, "enemy_count": 95, "spawn_interval": 0.08, "break_duration": 20.0, "wave_duration": 200.0},
+	{"wave_number": 20, "enemy_count": 100, "spawn_interval": 0.05, "break_duration": 20.0, "wave_duration": 210.0}
 ]
 
 @onready var spawn_timer: Timer = Timer.new()
 @onready var break_timer: Timer = Timer.new()
+@onready var wave_timer: Timer = Timer.new()  # New timer for wave duration
 
 var player_node: Node2D = null
 
 func _ready() -> void:
+	# Add to group so UI can find it
+	add_to_group("WaveManagerGroup")
+	
 	add_child(spawn_timer)
 	add_child(break_timer)
+	add_child(wave_timer)  # Add the wave timer
+	
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	break_timer.timeout.connect(_on_break_timer_timeout)
+	wave_timer.timeout.connect(_on_wave_timer_timeout)  # Connect wave timer
 
 	await get_tree().create_timer(0.01).timeout
 	player_node = get_tree().get_first_node_in_group("PlayerGroup")
@@ -59,6 +74,9 @@ func _ready() -> void:
 	start_next_wave()
 
 func start_next_wave() -> void:
+	# Reset the timeout flag at the start of each wave
+	wave_ended_by_timeout = false
+	
 	rich_text_label.text = "Wave: " + str(no_of_wave)
 	timer.start()
 	animation_player.play("Fade_to_normal")
@@ -79,6 +97,37 @@ func start_next_wave() -> void:
 	print("Starting Wave ", current_wave)
 	spawn_timer.wait_time = wave_info["spawn_interval"]
 	spawn_timer.start()
+	
+	# Start the wave timer with original duration
+	wave_timer.wait_time = wave_info["wave_duration"]
+	wave_timer.start()
+	print("Wave will end in ", wave_timer.wait_time, " seconds.")
+	
+	# Emit signal for UI with the original duration
+	wave_started.emit(wave_info["wave_duration"])
+	
+	no_of_wave += 1
+		
+
+	wave_info = wave_data[current_wave - 1]
+	enemies_spawned_in_wave = 0
+	enemies_remaining_in_wave = wave_info["enemy_count"]
+	wave_active = true
+	break_active = false
+
+	print("Starting Wave ", current_wave)
+	spawn_timer.wait_time = wave_info["spawn_interval"]
+	spawn_timer.start()
+	
+	# Start the wave timer (with reduced duration)
+	wave_timer.wait_time = wave_info["wave_duration"]
+	wave_timer.start()
+	print("Wave will end in ", wave_timer.wait_time, " seconds.")
+	
+	# Emit signal for UI with the ORIGINAL duration (add 1 to the reduced duration)
+	var original_duration = wave_info["wave_duration"] + 1.0
+	wave_started.emit(original_duration)
+	
 	no_of_wave += 1
 
 func _on_spawn_timer_timeout() -> void:
@@ -99,12 +148,37 @@ func spawn_enemy() -> void:
 
 	if enemy_instance.has_signal("died"):
 		enemy_instance.died.connect(_on_enemy_died)
+	
+	# Store a reference to the wave manager in the enemy
+	enemy_instance.set_meta("wave_manager", self)
 
 func _on_enemy_died() -> void:
 	enemies_remaining_in_wave -= 1
 	if enemies_remaining_in_wave <= 0 and wave_active:
 		print("All enemies defeated in Wave ", current_wave)
+		wave_timer.stop()  # Stop the wave timer if all enemies are defeated
 		start_break()
+
+func _on_wave_timer_timeout() -> void:
+	if wave_active:
+		print("Wave ", current_wave, " time expired! Killing all enemies.")
+		# Set the flag to indicate wave ended by timeout
+		wave_ended_by_timeout = true
+		
+		# Kill all enemies when wave timer expires
+		kill_all_enemies()
+		
+		wave_timer.stop()
+		start_break()
+
+# New function to kill all enemies instantly
+func kill_all_enemies():
+	var enemies = get_tree().get_nodes_in_group("EnemyGroup")
+	for enemy in enemies:
+		if enemy.has_method("die_without_crystal"):
+			enemy.die_without_crystal()
+		else:
+			enemy.queue_free()
 
 func start_break() -> void:
 	wave_active = false
@@ -113,6 +187,9 @@ func start_break() -> void:
 	break_timer.wait_time = wave_info["break_duration"]
 	break_timer.start()
 	print("Starting break for ", break_timer.wait_time, " seconds.")
+	
+	# Emit wave ended signal
+	wave_ended.emit()
 
 func _on_break_timer_timeout() -> void:
 	break_timer.stop()
@@ -125,15 +202,32 @@ func _on_player_died() -> void:
 	# Stop all spawning
 	spawn_timer.stop()
 	break_timer.stop()
+	wave_timer.stop()  # Also stop the wave timer
 	wave_active = false
 	break_active = false
 
 	# Remove all existing enemies
 	get_tree().call_group("EnemyGroup", "queue_free")
 
-	# --- NEW CODE TO SHOW LOSING MENU ---
 	# Wait a very short moment to ensure everything is processed,
 	# then add the losing menu.
 	await get_tree().create_timer(0.5).timeout
 
-	# --- END OF NEW CODE ---
+# Helper function to check if wave ended by timeout
+func did_wave_end_by_timeout() -> bool:
+	return wave_ended_by_timeout
+
+# Update the wave timer UI in real-time
+# Update the wave timer UI in real-time
+func _process(delta: float) -> void:
+	if wave_active and wave_timer.time_left > 0:
+		# Emit signal with remaining time
+		wave_time_updated.emit(wave_timer.time_left)
+		
+		# Check if time is up and kill enemies instantly
+		if wave_timer.time_left <= 0.0:
+			print("Wave ", current_wave, " time expired! Killing all enemies instantly.")
+			wave_ended_by_timeout = true
+			kill_all_enemies()
+			wave_timer.stop()
+			start_break()

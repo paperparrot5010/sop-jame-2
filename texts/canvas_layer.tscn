@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://cyuy8pt16hn1n"]
+[gd_scene load_steps=5 format=3 uid="uid://cyuy8pt16hn1n"]
 
 [ext_resource type="Script" uid="uid://c6vc61ni6pooy" path="res://canvas_layer.gd" id="1_7idcw"]
+[ext_resource type="Texture2D" uid="uid://bc16ql26onyjt" path="res://texts/healthbarUnder.png" id="3_8lph0"]
+[ext_resource type="Texture2D" uid="uid://begfk64w3uw3h" path="res://texts/healthbarProgress.png" id="4_e0cq6"]
+[ext_resource type="Script" uid="uid://csvettiuamm5q" path="res://texts/texture_progress_bar.gd" id="5_e0cq6"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_7idcw")
@@ -15,16 +18,26 @@ offset_right = 44.5
 offset_bottom = 117.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 40
-text = "40"
 
 [node name="TimerFortimeLeft" type="Timer" parent="."]
 autostart = true
 
 [node name="Label2" type="Label" parent="."]
-offset_left = 51.0
-offset_right = 97.0
+visible = false
+offset_right = 196.0
 offset_bottom = 55.0
 theme_override_font_sizes/font_size = 40
-text = "10"
+text = "Health :10"
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+offset_left = 19.0
+offset_top = 45.0
+offset_right = 83.0
+offset_bottom = 85.0
+scale = Vector2(3.5, 3.5)
+value = 100.0
+texture_under = ExtResource("3_8lph0")
+texture_progress = ExtResource("4_e0cq6")
+script = ExtResource("5_e0cq6")
 
 [connection signal="timeout" from="TimerFortimeLeft" to="." method="_on_timer_fortime_left_timeout"]

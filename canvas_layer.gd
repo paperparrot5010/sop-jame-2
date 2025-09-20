@@ -1,20 +1,24 @@
 extends CanvasLayer
 
-@export var time_left = 7
+@export var time_left = 0
 @onready var label: Label = $Label
 var shake_tween: Tween
 var is_shaking: bool = false
 var original_label_position: Vector2
 @onready var label_2: Label = $Label2
 
+# Reference to the wave manager
+var wave_manager: Node = null
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# Set up health display first
 	var player_node = get_tree().get_first_node_in_group("PlayerGroup")
 	if player_node:
 		player_node.health_changed.connect(_on_player_health_changed)
-		label.text = "Health: " + str(player_node.health)
+		label_2.text = "Health: " + str(player_node.health)
 	else:
-		label.text = "Health: N/A"
+		label_2.text = "Health: N/A"
 	
 	original_label_position = label.position # Store the original position
 	
@@ -23,9 +27,29 @@ func _ready() -> void:
 	# Define the shake animation: move to random position relative to original, then back to original
 	shake_tween.tween_property(label, "position", original_label_position + Vector2(randf_range(-5, 5), randf_range(-5, 5)), 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	shake_tween.tween_property(label, "position", original_label_position, 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	shake_tween.stop() # Initially stop the tween, so it doesn\'t play until needed
+	shake_tween.stop() # Initially stop the tween, so it doesn't play until needed
+	
+	# Try to find the wave manager - it might not be ready yet
+	find_wave_manager()
 
-# Called every frame. \'delta\' is the elapsed time since the previous frame.
+# Try to find the wave manager
+func find_wave_manager():
+	wave_manager = get_tree().get_first_node_in_group("WaveManagerGroup")
+	
+	if wave_manager:
+		print("WaveTimerUI: Wave manager found")
+		# Connect to the wave manager's signals
+		if wave_manager.has_signal("wave_started"):
+			wave_manager.wave_started.connect(_on_wave_started)
+		if wave_manager.has_signal("wave_time_updated"):
+			wave_manager.wave_time_updated.connect(_on_wave_time_updated)
+	else:
+		print("WaveTimerUI: Wave manager not found, trying again...")
+		# Try again after a short delay
+		await get_tree().create_timer(0.5).timeout
+		find_wave_manager()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if time_left <= 5:
 		# Change text color to red
@@ -44,8 +68,14 @@ func _process(delta: float) -> void:
 			label.position = original_label_position # Reset position to original
 			is_shaking = false
 
-func _on_timer_fortime_left_timeout() -> void:
-	time_left = max(0, time_left - 1) # Clamp time_left at 0
+# Called when a new wave starts
+func _on_wave_started(wave_duration: float) -> void:
+	time_left = int(wave_duration)
+	label.text = str(time_left)
+
+# Called when the wave time updates
+func _on_wave_time_updated(remaining_time: float) -> void:
+	time_left = int(remaining_time)
 	label.text = str(time_left)
 
 func _on_player_health_changed(new_health: int) -> void:

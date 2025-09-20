@@ -24,6 +24,7 @@ window/stretch/mode="canvas_items"
 PlayerGroup=""
 EnemyGroup=""
 MachineGroup=""
+ControlGroup=""
 
 [input]
 

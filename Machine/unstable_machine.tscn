@@ -1,8 +1,11 @@
-[gd_scene load_steps=20 format=3 uid="uid://c3810o6p03cq4"]
+[gd_scene load_steps=27 format=3 uid="uid://c3810o6p03cq4"]
 
 [ext_resource type="Script" uid="uid://b3ep8rtxbv0sl" path="res://static_body_2d.gd" id="1_ocn6s"]
 [ext_resource type="Texture2D" uid="uid://iv50hrpl56ki" path="res://Machine/basic furnace turning on.png" id="2_1qe7b"]
 [ext_resource type="Texture2D" uid="uid://epe6qq0s2rao" path="res://Machine/basic furnace working.png" id="3_1qe7b"]
+[ext_resource type="Texture2D" uid="uid://cjefa7rrhb8to" path="res://main file/Keyboard Letters and Symbols.png" id="4_ogju5"]
+[ext_resource type="Texture2D" uid="uid://bc16ql26onyjt" path="res://texts/healthbarUnder.png" id="5_oxw2b"]
+[ext_resource type="Texture2D" uid="uid://begfk64w3uw3h" path="res://texts/healthbarProgress.png" id="6_e6ii5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ogju5"]
 atlas = ExtResource("2_1qe7b")
@@ -115,6 +118,60 @@ height = 40.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_1qe7b"]
 radius = 28.0903
 
+[sub_resource type="Animation" id="Animation_oxw2b"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("KeyboardLettersAndSymbols:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_e6ii5"]
+resource_name = "normal"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("KeyboardLettersAndSymbols:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0666667, 0.433333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_wo3ye"]
+resource_name = "vanish"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("KeyboardLettersAndSymbols:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.433333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_44rrd"]
+_data = {
+&"RESET": SubResource("Animation_oxw2b"),
+&"normal": SubResource("Animation_e6ii5"),
+&"vanish": SubResource("Animation_wo3ye")
+}
+
 [node name="Unstable machine" type="StaticBody2D"]
 scale = Vector2(4, 4)
 script = ExtResource("1_ocn6s")
@@ -133,6 +190,35 @@ shape = SubResource("CapsuleShape2D_01rrt")
 position = Vector2(0, -9.25)
 shape = SubResource("CircleShape2D_1qe7b")
 debug_color = Color(0.876151, 0.000411614, 0.833656, 0.42)
+
+[node name="KeyboardLettersAndSymbols" type="Sprite2D" parent="."]
+position = Vector2(15, -14.5)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("4_ogju5")
+region_enabled = true
+region_rect = Rect2(64, 144, 16, 16)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_44rrd")
+}
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+offset_left = -23.75
+offset_top = -35.75
+offset_right = 40.25
+offset_bottom = 4.25
+scale = Vector2(0.7, 0.7)
+texture_under = ExtResource("5_oxw2b")
+texture_over = ExtResource("6_e6ii5")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -18.0
+offset_top = -49.5
+offset_right = 50.0
+offset_bottom = -26.5
+scale = Vector2(0.5, 0.5)
+text = "Stability:"
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]

@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://b0bc4nfc0uumy"]
+[gd_scene load_steps=13 format=3 uid="uid://b0bc4nfc0uumy"]
 
 [ext_resource type="Script" uid="uid://cn8p4ox8w82lm" path="res://Enemy/enemy.gd" id="1_px1sc"]
+[ext_resource type="Texture2D" uid="uid://gk8yvnxi36wc" path="res://Enemy/Slime.png" id="2_am0pq"]
 [ext_resource type="Texture2D" uid="uid://bypu5ku7t3x0g" path="res://Enemy/slime-Sheet.png" id="2_px1sc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eqilm"]
-size = Vector2(21, 9)
+size = Vector2(21.3333, 37.3333)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_am0pq"]
 atlas = ExtResource("2_px1sc")
@@ -61,16 +62,20 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_px1sc"]
-radius = 28.0
-height = 110.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_am0pq"]
+radius = 110.725
 
 [node name="Enemy" type="CharacterBody2D" groups=["EnemyGroup"]]
 scale = Vector2(0.5, 0.5)
 script = ExtResource("1_px1sc")
 
+[node name="Slime" type="Sprite2D" parent="."]
+position = Vector2(-6, -2)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_am0pq")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, -8.5)
+position = Vector2(8, -22)
 scale = Vector2(3, 3)
 shape = SubResource("RectangleShape2D_eqilm")
 
@@ -79,17 +84,17 @@ path_desired_distance = 3.0
 target_desired_distance = 3.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
 position = Vector2(0, -22)
 scale = Vector2(3, 3)
 sprite_frames = SubResource("SpriteFrames_glvfu")
-animation = &"Run"
+animation = &"Attack"
 
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(-1, -10)
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_px1sc")
+position = Vector2(4, -22)
+shape = SubResource("CircleShape2D_am0pq")
 debug_color = Color(1, 0, 0, 0.419608)
 
 [node name="animation Timer" type="Timer" parent="."]
