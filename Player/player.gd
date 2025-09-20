@@ -234,3 +234,7 @@ func _on_area_2d_area_exited(area: Area2D) -> void:
 		print("Player left machine area")
 		
 		
+
+
+func _on_button_pressed() -> void:
+	pass # Replace with function body.

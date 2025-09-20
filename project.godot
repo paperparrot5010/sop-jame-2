@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 CrystalScript="*res://Collectabel objects/crystal.tscn"
 GlobalSignals="*res://GlobalSignals.gd"
+SignalForAddingStabb="*res://Signal_for_addingStabb.gd"
 
 [display]
 
