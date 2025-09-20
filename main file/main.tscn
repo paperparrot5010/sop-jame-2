@@ -303,3 +303,30 @@ libraries = {
 }
 
 [node name="Timer" type="Timer" parent="CanvasLayer(wave no)"]
+
+[node name="Bomb spawnPoint1" type="Node2D" parent="."]
+position = Vector2(140, 62)
+
+[node name="Bomb spawnPoint2" type="Node2D" parent="."]
+position = Vector2(966, 202)
+
+[node name="Bomb spawnPoint3" type="Node2D" parent="."]
+position = Vector2(952, 582)
+
+[node name="Bomb spawnPoint4" type="Node2D" parent="."]
+position = Vector2(473, 611)
+
+[node name="Bomb spawnPoint5" type="Node2D" parent="."]
+position = Vector2(187, 724)
+
+[node name="Bomb spawnPoint6" type="Node2D" parent="."]
+position = Vector2(193, 510)
+
+[node name="Bomb spawnPoint7" type="Node2D" parent="."]
+position = Vector2(893, 703)
+
+[node name="Bomb spawnPoint8" type="Node2D" parent="."]
+position = Vector2(644, 699)
+
+[node name="Bomb spawnPoint9" type="Node2D" parent="."]
+position = Vector2(449, 701)
