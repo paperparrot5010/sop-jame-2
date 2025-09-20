@@ -1,5 +1,7 @@
 extends StaticBody2D
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+
 @onready var keyboard_letters_and_symbols: Sprite2D = $KeyboardLettersAndSymbols
 @export var control_node: Node
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
@@ -18,9 +20,11 @@ var should_spawn_bombs = false
 # Track recently used spawn points to prevent overlapping bombs
 var recently_used_spawn_points = {}
 var spawn_cooldown = 5.0  # Seconds before a spawn point can be reused
+var stabilizing_points = 0
 
 func _ready() -> void:
-	print("Machine _ready() called")
+	GlobalSignals.crystal_collected.connect(_on_crystal_collected)
+
 	timer.start()
 	control_node = get_tree().get_first_node_in_group("ControlGroup")
 	keyboard_letters_and_symbols.hide()
@@ -112,3 +116,16 @@ func spawn_bomb() -> void:
 	var enemy_instance = Bomb_scene.instantiate()
 	get_parent().add_child(enemy_instance)
 	enemy_instance.global_position = random_spawn_point.global_position
+
+
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.is_in_group("PlayerGroup"):
+		print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+		animation_player.play("normal")
+
+
+func _on_crystal_collected():
+	stabilizing_points += 1
+	pass

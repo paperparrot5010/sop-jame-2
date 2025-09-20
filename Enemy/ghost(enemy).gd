@@ -1,5 +1,6 @@
 extends CharacterBody2D
-
+@onready var ghost: Sprite2D = $Ghost
+var damage_amount = 2
 # Health properties
 var max_health = 2
 var current_health = max_health
@@ -7,17 +8,22 @@ var current_health = max_health
 # Navigation properties
 var navigation_agent: NavigationAgent2D
 var player_target: CharacterBody2D = null
-var chase_player = false
 
 # Movement properties
-var speed = 150
+var speed = 70
+
+# Attack properties
+var can_move: bool = true
+var is_attacking: bool = false
+var attack_timer: Timer
+var attack_cooldown: float = 0.5  # Time between attacks
+var stop_duration: float = 0.7    # Time to stop moving when player enters area
 
 # References
 @onready var health_bar: TextureProgressBar = $TextureProgressBar
 @onready var animation_player = $AnimationPlayer
-@onready var sprite = $Sprite2D
-@onready var detection_area = $DetectionArea
 @onready var navigation_timer = $"Navigaion Timer"
+@onready var detection_area = $DetectionArea
 
 func _ready():
 	print("Enemy ready - setting up navigation")
@@ -46,16 +52,6 @@ func _ready():
 	else:
 		print("Health bar not found!")
 	
-	# Connect detection area signals manually if not connected in editor
-	if detection_area:
-		if not detection_area.body_entered.is_connected(_on_detection_area_body_entered):
-			detection_area.body_entered.connect(_on_detection_area_body_entered)
-		if not detection_area.body_exited.is_connected(_on_detection_area_body_exited):
-			detection_area.body_exited.connect(_on_detection_area_body_exited)
-		print("Detection area signals connected")
-	else:
-		print("ERROR: DetectionArea not found!")
-	
 	# Find player using the same method as working script
 	player_target = get_tree().get_first_node_in_group("PlayerGroup")
 	if player_target == null:
@@ -72,10 +68,27 @@ func _ready():
 	else:
 		print("ERROR: Navigation Timer not found!")
 	
+	# Setup attack timer
+	attack_timer = Timer.new()
+	attack_timer.wait_time = attack_cooldown
+	attack_timer.one_shot = false
+	attack_timer.timeout.connect(_on_attack_timer_timeout)
+	add_child(attack_timer)
+	
+	# Connect detection area signals
+	if detection_area:
+		if not detection_area.body_entered.is_connected(_on_detection_area_body_entered):
+			detection_area.body_entered.connect(_on_detection_area_body_entered)
+		if not detection_area.body_exited.is_connected(_on_detection_area_body_exited):
+			detection_area.body_exited.connect(_on_detection_area_body_exited)
+		print("Detection area signals connected")
+	else:
+		print("ERROR: DetectionArea not found!")
+	
 	print("Enemy setup complete")
 
 func _physics_process(delta):
-	if not chase_player or not player_target or not navigation_agent:
+	if not player_target or not navigation_agent or not can_move:
 		return
 	
 	# Set target position like the working script
@@ -101,9 +114,9 @@ func _physics_process(delta):
 	
 	# Flip sprite based on player position like the working script
 	if player_target.global_position.x < global_position.x:
-		sprite.flip_h = true
+		ghost.flip_h = false
 	else:
-		sprite.flip_h = false
+		ghost.flip_h = true
 
 func _on_velocity_computed(safe_velocity: Vector2):
 	velocity = safe_velocity
@@ -112,7 +125,13 @@ func _on_velocity_computed(safe_velocity: Vector2):
 
 func update_animation(movement_vector: Vector2):
 	if animation_player:
-		if movement_vector.length() > 0.1:
+		if is_attacking:
+			# Play attack animation if available
+			if animation_player.has_animation("attack"):
+				animation_player.play("attack")
+			elif animation_player.has_animation("hurt"):
+				animation_player.play("hurt")
+		elif movement_vector.length() > 0.1:
 			if animation_player.has_animation("walk"):
 				animation_player.play("walk")
 			elif animation_player.has_animation("move"):
@@ -123,7 +142,7 @@ func update_animation(movement_vector: Vector2):
 
 func _on_navigation_timer_timeout():
 	# Periodically update the path to player
-	if chase_player and player_target and navigation_agent:
+	if player_target and navigation_agent and can_move:
 		navigation_agent.target_position = player_target.global_position
 		print("Timer: Updating navigation target to: ", player_target.global_position)
 
@@ -155,7 +174,9 @@ func _hide_health_bar():
 func die():
 	print("Enemy died")
 	velocity = Vector2.ZERO
-	chase_player = false
+	can_move = false
+	is_attacking = false
+	attack_timer.stop()
 	
 	if health_bar:
 		health_bar.visible = false
@@ -168,39 +189,60 @@ func die():
 	
 	queue_free()
 
-func _on_detection_area_body_entered(body):
-	print("Body entered detection area: ", body.name, " | Groups: ", body.get_groups())
+func _on_detection_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group("PlayerGroup"):
-		print("Player detected! Starting chase")
-		chase_player = true
-		player_target = body
-		if navigation_agent:
-			navigation_agent.target_position = player_target.global_position
-			print("Set target to player position: ", player_target.global_position)
-		
-		if health_bar and current_health < max_health:
-			health_bar.visible = true
-
-func _on_detection_area_body_exited(body):
-	print("Body exited detection area: ", body.name)
-	if body.is_in_group("PlayerGroup"):
-		print("Player lost, stopping chase")
-		chase_player = false
-		player_target = null
+		print("Player entered detection area - starting attack sequence")
+		# Stop moving
+		can_move = false
+		is_attacking = true
 		velocity = Vector2.ZERO
+		
+		# Play attack animation
 		update_animation(Vector2.ZERO)
 		
-		if health_bar and current_health > 0:
-			var hide_timer = get_tree().create_timer(2.0)
-			hide_timer.timeout.connect(_hide_health_bar)
+		# Deal initial damage
+		body.player_takes_damage(damage_amount)
+		print("Initial damage dealt to player")
+		
+		# Start attack timer for repeated attacks
+		attack_timer.start()
+		
+		# Start movement cooldown timer
+		var move_cooldown = get_tree().create_timer(stop_duration)
+		move_cooldown.timeout.connect(_on_move_cooldown_timeout)
+
+func _on_detection_area_body_exited(body: Node2D) -> void:
+	if body.is_in_group("PlayerGroup"):
+		print("Player left detection area - stopping attacks")
+		# Stop attacking and resume movement
+		is_attacking = false
+		can_move = true
+		attack_timer.stop()
+		update_animation(velocity)
+
+func _on_attack_timer_timeout():
+	if is_attacking and player_target and is_instance_valid(player_target):
+		print("Dealing periodic damage to player")
+		player_target.player_takes_damage(damage_amount)
+		
+		# Play attack animation
+		if animation_player and animation_player.has_animation("attack"):
+			animation_player.play("attack")
+
+func _on_move_cooldown_timeout():
+	# Allow movement again after stop duration
+	if is_attacking:  # Only allow movement if still attacking (player still in area)
+		can_move = true
+		print("Movement cooldown ended - can move while attacking")
 
 # Debug function to check if navigation is working
 func _input(event):
 	if event.is_action_pressed("ui_accept"):  # Space key
 		print("=== DEBUG INFO ===")
-		print("Chase player: ", chase_player)
 		print("Player target: ", player_target)
 		print("Navigation agent: ", navigation_agent)
+		print("Can move: ", can_move)
+		print("Is attacking: ", is_attacking)
 		if player_target:
 			print("Player position: ", player_target.global_position)
 			print("Player groups: ", player_target.get_groups())

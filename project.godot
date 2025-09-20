@@ -15,6 +15,11 @@ run/main_scene="uid://bxhodc2rh8n7a"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+CrystalScript="*res://Collectabel objects/crystal.tscn"
+GlobalSignals="*res://GlobalSignals.gd"
+
 [display]
 
 window/stretch/mode="canvas_items"

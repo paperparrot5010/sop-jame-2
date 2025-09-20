@@ -173,7 +173,7 @@ _data = {
 &"vanish": SubResource("Animation_wo3ye")
 }
 
-[node name="Unstable machine" type="StaticBody2D"]
+[node name="Unstable machine" type="StaticBody2D" groups=["MachineGroup"]]
 scale = Vector2(4, 4)
 script = ExtResource("1_ocn6s")
 
@@ -185,7 +185,7 @@ animation = &"Working"
 position = Vector2(0, -8)
 shape = SubResource("CapsuleShape2D_01rrt")
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Area2D" type="Area2D" parent="." groups=["MachineGroup"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, -9.25)
@@ -193,7 +193,7 @@ shape = SubResource("CircleShape2D_1qe7b")
 debug_color = Color(0.876151, 0.000411614, 0.833656, 0.42)
 
 [node name="KeyboardLettersAndSymbols" type="Sprite2D" parent="."]
-position = Vector2(15, -14.5)
+position = Vector2(19, -4.75)
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("4_ogju5")
 region_enabled = true
@@ -226,5 +226,4 @@ text = "Stability: 100%"
 [node name="Timer" type="Timer" parent="."]
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
-[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

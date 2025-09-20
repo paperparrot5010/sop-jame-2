@@ -1,4 +1,5 @@
 extends CanvasLayer
+@onready var crystal_label: Label = $Crystal_label
 
 @export var time_left = 0
 @onready var label: Label = $Label
@@ -6,12 +7,15 @@ var shake_tween: Tween
 var is_shaking: bool = false
 var original_label_position: Vector2
 @onready var label_2: Label = $Label2
-
+var crystals = 0
 # Reference to the wave manager
 var wave_manager: Node = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# Connect to the global signal
+	GlobalSignals.crystal_collected.connect(_on_crystal_collected)
+	
 	# Set up health display first
 	var player_node = get_tree().get_first_node_in_group("PlayerGroup")
 	if player_node:
@@ -27,7 +31,7 @@ func _ready() -> void:
 	# Define the shake animation: move to random position relative to original, then back to original
 	shake_tween.tween_property(label, "position", original_label_position + Vector2(randf_range(-5, 5), randf_range(-5, 5)), 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	shake_tween.tween_property(label, "position", original_label_position, 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	shake_tween.stop() # Initially stop the tween, so it doesn\\'t play until needed
+	shake_tween.stop() # Initially stop the tween, so it doesn't play until needed
 	
 	# Try to find the wave manager - it might not be ready yet
 	find_wave_manager()
@@ -38,7 +42,7 @@ func find_wave_manager():
 	
 	if wave_manager:
 		print("WaveTimerUI: Wave manager found")
-		# Connect to the wave manager\\\'s signals
+		# Connect to the wave manager's signals
 		if wave_manager.has_signal("wave_started"):
 			wave_manager.wave_started.connect(_on_wave_started)
 		if wave_manager.has_signal("wave_time_updated"):
@@ -52,7 +56,7 @@ func find_wave_manager():
 		await get_tree().create_timer(0.5).timeout
 		find_wave_manager()
 
-# Called every frame. \\\'delta\\\' is the elapsed time since the previous frame.
+# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if time_left <= 5 and time_left > 0:
 		# Change text color to red
@@ -88,3 +92,11 @@ func _on_wave_ended() -> void:
 
 func _on_player_health_changed(new_health: int) -> void:
 	label_2.text = "Health: " + str(new_health)
+
+func add_crystal():
+	crystals += 1
+	crystal_label.text = str(crystals) + "X"
+	
+func _on_crystal_collected():
+	print("CCCCCCCCCCCCCCCCCCCCCCCCccCCCCCCCC")
+	add_crystal()

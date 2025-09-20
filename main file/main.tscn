@@ -292,6 +292,7 @@ position = Vector2(574, 526)
 script = ExtResource("6_jhl0g")
 enemy_scene = ExtResource("7_58fyy")
 spawn_points = [NodePath("../SpawnPoint1"), NodePath("../SpawnPoint2"), NodePath("../SpawnPoint3"), NodePath("../SpawnPoint4"), NodePath("../SpawnPoint5"), NodePath("../SpawnPoint6"), NodePath("../SpawnPoint7"), NodePath("../SpawnPoint8"), NodePath("../SpawnPoint9")]
+ghost_scene = ExtResource("10_h3whw")
 
 [node name="SpawnPoint1" type="Node2D" parent="."]
 position = Vector2(285, 432)
@@ -345,6 +346,3 @@ libraries = {
 }
 
 [node name="Timer" type="Timer" parent="CanvasLayer(wave no)"]
-
-[node name="Ghost(enemy)" parent="." instance=ExtResource("10_h3whw")]
-position = Vector2(333, 497)

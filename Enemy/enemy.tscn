@@ -1,9 +1,9 @@
 [gd_scene load_steps=18 format=3 uid="uid://b0bc4nfc0uumy"]
 
 [ext_resource type="Script" uid="uid://cn8p4ox8w82lm" path="res://Enemy/enemy.gd" id="1_px1sc"]
-[ext_resource type="Texture2D" uid="uid://gk8yvnxi36wc" path="res://Enemy/Slime.png" id="2_am0pq"]
 [ext_resource type="Shader" uid="uid://b2qaso3c12ung" path="res://Enemy/hitFlash.tres" id="2_eqilm"]
 [ext_resource type="Texture2D" uid="uid://bypu5ku7t3x0g" path="res://Enemy/slime-Sheet.png" id="2_px1sc"]
+[ext_resource type="Texture2D" uid="uid://d155hrydx0wxs" path="res://Enemy/New slime.png" id="3_eqilm"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ncf7h"]
 shader = ExtResource("2_eqilm")
@@ -116,7 +116,7 @@ script = ExtResource("1_px1sc")
 material = SubResource("ShaderMaterial_ncf7h")
 position = Vector2(-6, -2)
 scale = Vector2(0.2, 0.2)
-texture = ExtResource("2_am0pq")
+texture = ExtResource("3_eqilm")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(8, -22)

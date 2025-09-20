@@ -5,7 +5,7 @@ extends Node
 # Removed var no_of_wave = 1
 @export var enemy_scene: PackedScene
 @export var spawn_points: Array[Node2D]
-
+@export var ghost_scene: PackedScene
 # Preload the losing menu scene for efficiency
 var losing_menu_scene = preload("res://texts/losing_menu.tscn")
 
@@ -21,8 +21,7 @@ signal wave_started(wave_duration)
 signal wave_time_updated(remaining_time)
 signal wave_ended
 
-# Add wave duration to each wave (in seconds) - reduced by 1 second each
-# Add wave duration to each wave (in seconds) - original durations
+# Wave data for 10 waves (reduced from 20)
 var wave_data = [
 	{"wave_number": 1, "enemy_count": 5, "spawn_interval": 1.0, "break_duration": 5.0, "wave_duration": 20.0},
 	{"wave_number": 2, "enemy_count": 10, "spawn_interval": 0.8, "break_duration": 7.0, "wave_duration": 30.0},
@@ -33,17 +32,7 @@ var wave_data = [
 	{"wave_number": 7, "enemy_count": 35, "spawn_interval": 0.35, "break_duration": 12.0, "wave_duration": 80.0},
 	{"wave_number": 8, "enemy_count": 40, "spawn_interval": 0.35, "break_duration": 15.0, "wave_duration": 90.0},
 	{"wave_number": 9, "enemy_count": 45, "spawn_interval": 0.3, "break_duration": 15.0, "wave_duration": 100.0},
-	{"wave_number": 10, "enemy_count": 50, "spawn_interval": 0.3, "break_duration": 15.0, "wave_duration": 110.0},
-	{"wave_number": 11, "enemy_count": 55, "spawn_interval": 0.25, "break_duration": 15.0, "wave_duration": 120.0},
-	{"wave_number": 12, "enemy_count": 60, "spawn_interval": 0.25, "break_duration": 18.0, "wave_duration": 130.0},
-	{"wave_number": 13, "enemy_count": 65, "spawn_interval": 0.2, "break_duration": 18.0, "wave_duration": 140.0},
-	{"wave_number": 14, "enemy_count": 70, "spawn_interval": 0.2, "break_duration": 18.0, "wave_duration": 150.0},
-	{"wave_number": 15, "enemy_count": 75, "spawn_interval": 0.15, "break_duration": 20.0, "wave_duration": 160.0},
-	{"wave_number": 16, "enemy_count": 80, "spawn_interval": 0.15, "break_duration": 20.0, "wave_duration": 170.0},
-	{"wave_number": 17, "enemy_count": 85, "spawn_interval": 0.1, "break_duration": 20.0, "wave_duration": 180.0},
-	{"wave_number": 18, "enemy_count": 90, "spawn_interval": 0.1, "break_duration": 20.0, "wave_duration": 190.0},
-	{"wave_number": 19, "enemy_count": 95, "spawn_interval": 0.08, "break_duration": 20.0, "wave_duration": 200.0},
-	{"wave_number": 20, "enemy_count": 100, "spawn_interval": 0.05, "break_duration": 20.0, "wave_duration": 210.0}
+	{"wave_number": 10, "enemy_count": 50, "spawn_interval": 0.3, "break_duration": 15.0, "wave_duration": 110.0}
 ]
 
 @onready var spawn_timer: Timer = Timer.new()
@@ -51,6 +40,8 @@ var wave_data = [
 @onready var wave_timer: Timer = Timer.new()  # New timer for wave duration
 
 var player_node: Node2D = null
+var ghost_spawn_count: int = 0  # Track how many ghosts have been spawned in this wave
+var max_ghosts_per_wave: int = 0  # Maximum ghosts allowed per wave
 
 func _ready() -> void:
 	# Add to group so UI can find it
@@ -76,12 +67,21 @@ func _ready() -> void:
 func start_next_wave() -> void:
 	# Reset the timeout flag at the start of each wave
 	wave_ended_by_timeout = false
+	ghost_spawn_count = 0  # Reset ghost counter each wave
 	
 	current_wave += 1 # Increment current_wave at the beginning of the function
 
 	if current_wave > wave_data.size():
 		print("All waves completed!")
 		return
+		
+	# Calculate maximum ghosts for this wave (30% of total enemies, starting from wave 3)
+	if current_wave >= 3:
+		max_ghosts_per_wave = int(wave_data[current_wave - 1]["enemy_count"] * 0.3)
+	else:
+		max_ghosts_per_wave = 0
+		
+	print("Wave ", current_wave, ": Max ghosts allowed: ", max_ghosts_per_wave)
 		
 	# Display the correct wave number
 	rich_text_label.text = "Wave: " + str(current_wave)
@@ -120,7 +120,18 @@ func spawn_enemy() -> void:
 	if enemy_scene == null or spawn_points.is_empty():
 		return
 
-	var enemy_instance = enemy_scene.instantiate()
+	# Determine which enemy to spawn
+	var enemy_to_spawn = enemy_scene
+	
+	# Only spawn ghosts from wave 3 onwards, and only if we haven't reached the maximum
+	if current_wave >= 3 and ghost_scene != null and ghost_spawn_count < max_ghosts_per_wave:
+		# 50% chance to spawn ghost instead of normal enemy
+		if randf() < 0.5:
+			enemy_to_spawn = ghost_scene
+			ghost_spawn_count += 1
+			print("Spawning ghost (", ghost_spawn_count, "/", max_ghosts_per_wave, ")")
+
+	var enemy_instance = enemy_to_spawn.instantiate()
 	var random_spawn_point = spawn_points[randi() % spawn_points.size()]
 	get_parent().add_child(enemy_instance)
 	enemy_instance.global_position = random_spawn_point.global_position
@@ -200,7 +211,7 @@ func did_wave_end_by_timeout() -> bool:
 # Update the wave timer UI in real-time
 func _process(delta: float) -> void:
 	if wave_active:
-		# Emit signal with remaining time, even if it\\\\\\\\'s 0
+		# Emit signal with remaining time, even if it's 0
 		if wave_timer.time_left >= 0:
 			wave_time_updated.emit(wave_timer.time_left)
 		

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cyuy8pt16hn1n"]
+[gd_scene load_steps=6 format=3 uid="uid://cyuy8pt16hn1n"]
 
 [ext_resource type="Script" uid="uid://c6vc61ni6pooy" path="res://canvas_layer.gd" id="1_7idcw"]
 [ext_resource type="Texture2D" uid="uid://bc16ql26onyjt" path="res://texts/healthbarUnder.png" id="3_8lph0"]
 [ext_resource type="Texture2D" uid="uid://begfk64w3uw3h" path="res://texts/healthbarProgress.png" id="4_e0cq6"]
 [ext_resource type="Script" uid="uid://csvettiuamm5q" path="res://texts/texture_progress_bar.gd" id="5_e0cq6"]
+[ext_resource type="Texture2D" uid="uid://co1xfboga5wvn" path="res://free_crystal_dark_frakassets/crystal_dark_32x32_12f_20d.png" id="5_glu2v"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_7idcw")
@@ -39,5 +40,20 @@ value = 100.0
 texture_under = ExtResource("3_8lph0")
 texture_progress = ExtResource("4_e0cq6")
 script = ExtResource("5_e0cq6")
+
+[node name="CrystalDark32x3212f20d" type="Sprite2D" parent="."]
+position = Vector2(1070, 69)
+scale = Vector2(2, 2)
+texture = ExtResource("5_glu2v")
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 32)
+
+[node name="Crystal_label" type="Label" parent="."]
+offset_left = 1021.0
+offset_top = 48.0
+offset_right = 1061.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 30
+text = "0"
 
 [connection signal="timeout" from="TimerFortimeLeft" to="." method="_on_timer_fortime_left_timeout"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://okmrywtn40ld"]
+[gd_scene load_steps=19 format=3 uid="uid://okmrywtn40ld"]
 
 [ext_resource type="Script" uid="uid://dtk1oas6y7lbo" path="res://Player/player.gd" id="1_4ntmi"]
 [ext_resource type="Texture2D" uid="uid://cx5752bo22o82" path="res://Player/angre(idle).png" id="2_4ntmi"]
@@ -120,6 +120,9 @@ _data = {
 radius = 18.0
 height = 44.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_gwnis"]
+radius = 30.1357
+
 [node name="Player" type="CharacterBody2D" groups=["PlayerGroup"]]
 scale = Vector2(0.7, 0.7)
 script = ExtResource("1_4ntmi")
@@ -153,3 +156,67 @@ zoom = Vector2(1.2, 1.2)
 position = Vector2(0, 13)
 
 [node name="CanvasLayer" parent="." instance=ExtResource("4_gwnis")]
+
+[node name="stabilizing the machine" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="stabilizing the machine"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 272.0
+offset_top = 153.0
+offset_right = -252.0
+offset_bottom = -91.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="stabilizing the machine/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -145.5
+offset_top = -28.5
+offset_right = 145.5
+offset_bottom = 26.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "1 Crystal = +1%"
+
+[node name="Label2" type="Label" parent="stabilizing the machine/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = 108.0
+offset_right = 272.0
+offset_bottom = 163.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "Press esc to close"
+
+[node name="Button" type="Button" parent="stabilizing the machine/Panel"]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 302.0
+offset_right = 212.0
+offset_bottom = 376.0
+theme_override_font_sizes/font_size = 40
+disabled = true
+text = "Stabilize"
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_gwnis")
+debug_color = Color(0.408348, 0.601729, 0.230341, 0.42)
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]

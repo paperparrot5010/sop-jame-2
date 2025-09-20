@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cl5evdep2rmyf"]
+
+[ext_resource type="Texture2D" uid="uid://b3m5uvpv7jv5y" path="res://Enemy/New worm.png" id="1_3dh00"]
+[ext_resource type="Script" uid="uid://b4by735g4hsrx" path="res://Enemy/sprite_2d.gd" id="2_xqb3l"]
+
+[node name="Worm(enemy)" type="CharacterBody2D" groups=["EnemyGroup"]]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_3dh00")
+script = ExtResource("2_xqb3l")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
