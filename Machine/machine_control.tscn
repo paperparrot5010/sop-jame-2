@@ -12,30 +12,34 @@ grow_vertical = 2
 
 [node name="BigIcon" type="Sprite2D" parent="."]
 position = Vector2(571, 325)
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("1_wnoli")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 0
-offset_left = 415.0
-offset_top = 477.0
-offset_right = 550.0
-offset_bottom = 528.0
+offset_left = 454.0
+offset_top = 444.0
+offset_right = 589.0
+offset_bottom = 495.0
+scale = Vector2(0.7, 0.7)
 text = "Stabilize"
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 577.0
-offset_top = 485.0
-offset_right = 839.0
-offset_bottom = 521.0
+offset_left = 565.0
+offset_top = 453.0
+offset_right = 827.0
+offset_bottom = 489.0
+scale = Vector2(0.7, 0.7)
 theme_override_font_sizes/font_size = 17
 text = "Costs 10 stabilizing crystals"
 
 [node name="Label2" type="Label" parent="." groups=["ControlGroup"]]
 layout_mode = 0
-offset_left = 402.0
-offset_top = 198.0
-offset_right = 783.0
-offset_bottom = 267.0
+offset_left = 457.0
+offset_top = 213.0
+offset_right = 838.0
+offset_bottom = 282.0
+scale = Vector2(0.7, 0.7)
 theme_override_font_sizes/font_size = 50
 text = "10 crystals = 5%"
