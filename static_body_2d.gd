@@ -6,7 +6,7 @@ extends StaticBody2D
 @export var stability = 100
 @onready var timer: Timer = $Timer
 @onready var texture_progress_bar: TextureProgressBar = $TextureProgressBar
-@onready var stability_label: Label = $Label  # Add this line - adjust node name if different
+@onready var stability_label: Label = $Label
 
 # A variable to track if the player is in the zone
 var player_in_zone = false
@@ -23,19 +23,19 @@ func _ready() -> void:
 	# Initialize TextureProgressBar and Label
 	if texture_progress_bar:
 		texture_progress_bar.min_value = 0
-		texture_progress_bar.max_value = stability
+		texture_progress_bar.max_value = 100  # Fixed to always be 100
 		texture_progress_bar.value = stability
 	
 	if stability_label:
-		stability_label.text = "Stability: 100%"  # Set initial text
+		stability_label.text = "Stability: 100%"
 		print("Label initialized")
 	else:
 		print("ERROR: stability_label is null!")
 
-# ... your existing functions ...
-
 func _on_timer_timeout() -> void:
 	stability -= 1
+	stability = clamp(stability, 0, 100)  # ← ADD THIS LINE to clamp between 0-100
+	
 	print("Timer timeout! Stability now: ", stability)
 	
 	if texture_progress_bar:
@@ -44,8 +44,7 @@ func _on_timer_timeout() -> void:
 	
 	# Update the label text with percentage
 	if stability_label:
-		var percentage = int((float(stability) / 100.0) * 100)  # Calculate percentage
-		stability_label.text = "Stability: " + str(percentage) + "%"
+		stability_label.text = "Stability: " + str(stability) + "%"
 		print("Label updated to: ", stability_label.text)
 	
 	print("Progress bar updated to: ", stability)

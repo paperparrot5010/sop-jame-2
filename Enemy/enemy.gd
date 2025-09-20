@@ -3,6 +3,7 @@ extends CharacterBody2D
 @onready var animation_timer: Timer = $"animation Timer"
 @onready var damage_timer: Timer = $"damage timer"
 @onready var slime: Sprite2D = $Slime
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 signal died
 
@@ -82,6 +83,7 @@ func take_damage(amount):
 		die()
 
 func die():
+	animation_player.play("hit-Flash")
 	died.emit()
 	print("Enemy died!")
 	

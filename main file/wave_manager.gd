@@ -2,7 +2,7 @@ extends Node
 @onready var rich_text_label: RichTextLabel = $"../CanvasLayer(wave no)/RichTextLabel"
 @onready var animation_player: AnimationPlayer = $"../CanvasLayer(wave no)/AnimationPlayer"
 @onready var timer: Timer = $"../CanvasLayer(wave no)/Timer"
-var no_of_wave = 1
+# Removed var no_of_wave = 1
 @export var enemy_scene: PackedScene
 @export var spawn_points: Array[Node2D]
 
@@ -77,16 +77,18 @@ func start_next_wave() -> void:
 	# Reset the timeout flag at the start of each wave
 	wave_ended_by_timeout = false
 	
-	rich_text_label.text = "Wave: " + str(no_of_wave)
-	timer.start()
-	animation_player.play("Fade_to_normal")
-	await timer.timeout
-	animation_player.play("Fade_to_vanish")
-	current_wave += 1
+	current_wave += 1 # Increment current_wave at the beginning of the function
+
 	if current_wave > wave_data.size():
 		print("All waves completed!")
 		return
 		
+	# Display the correct wave number
+	rich_text_label.text = "Wave: " + str(current_wave)
+	timer.start()
+	animation_player.play("Fade_to_normal")
+	await timer.timeout
+	animation_player.play("Fade_to_vanish")
 
 	var wave_info = wave_data[current_wave - 1]
 	enemies_spawned_in_wave = 0
@@ -106,29 +108,6 @@ func start_next_wave() -> void:
 	# Emit signal for UI with the original duration
 	wave_started.emit(wave_info["wave_duration"])
 	
-	no_of_wave += 1
-		
-
-	wave_info = wave_data[current_wave - 1]
-	enemies_spawned_in_wave = 0
-	enemies_remaining_in_wave = wave_info["enemy_count"]
-	wave_active = true
-	break_active = false
-
-	print("Starting Wave ", current_wave)
-	spawn_timer.wait_time = wave_info["spawn_interval"]
-	spawn_timer.start()
-	
-	# Start the wave timer (with reduced duration)
-	wave_timer.wait_time = wave_info["wave_duration"]
-	wave_timer.start()
-	print("Wave will end in ", wave_timer.wait_time, " seconds.")
-	
-	# Emit signal for UI with the ORIGINAL duration (add 1 to the reduced duration)
-	var original_duration = wave_info["wave_duration"] + 1.0
-	wave_started.emit(original_duration)
-	
-	no_of_wave += 1
 
 func _on_spawn_timer_timeout() -> void:
 	if enemies_spawned_in_wave < wave_data[current_wave - 1]["enemy_count"]:
@@ -170,6 +149,7 @@ func _on_wave_timer_timeout() -> void:
 		
 		wave_timer.stop()
 		start_break()
+		wave_ended.emit() # Emit wave ended signal here as well
 
 # New function to kill all enemies instantly
 func kill_all_enemies():
@@ -218,11 +198,11 @@ func did_wave_end_by_timeout() -> bool:
 	return wave_ended_by_timeout
 
 # Update the wave timer UI in real-time
-# Update the wave timer UI in real-time
 func _process(delta: float) -> void:
-	if wave_active and wave_timer.time_left > 0:
-		# Emit signal with remaining time
-		wave_time_updated.emit(wave_timer.time_left)
+	if wave_active:
+		# Emit signal with remaining time, even if it\\\\\\\\'s 0
+		if wave_timer.time_left >= 0:
+			wave_time_updated.emit(wave_timer.time_left)
 		
 		# Check if time is up and kill enemies instantly
 		if wave_timer.time_left <= 0.0:
@@ -231,3 +211,4 @@ func _process(delta: float) -> void:
 			kill_all_enemies()
 			wave_timer.stop()
 			start_break()
+			wave_ended.emit() # Ensure wave_ended is emitted here as well

@@ -27,7 +27,7 @@ func _ready() -> void:
 	# Define the shake animation: move to random position relative to original, then back to original
 	shake_tween.tween_property(label, "position", original_label_position + Vector2(randf_range(-5, 5), randf_range(-5, 5)), 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	shake_tween.tween_property(label, "position", original_label_position, 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	shake_tween.stop() # Initially stop the tween, so it doesn't play until needed
+	shake_tween.stop() # Initially stop the tween, so it doesn\\'t play until needed
 	
 	# Try to find the wave manager - it might not be ready yet
 	find_wave_manager()
@@ -38,20 +38,23 @@ func find_wave_manager():
 	
 	if wave_manager:
 		print("WaveTimerUI: Wave manager found")
-		# Connect to the wave manager's signals
+		# Connect to the wave manager\\\'s signals
 		if wave_manager.has_signal("wave_started"):
 			wave_manager.wave_started.connect(_on_wave_started)
 		if wave_manager.has_signal("wave_time_updated"):
 			wave_manager.wave_time_updated.connect(_on_wave_time_updated)
+		# Connect to wave_ended signal to ensure 0 is displayed
+		if wave_manager.has_signal("wave_ended"):
+			wave_manager.wave_ended.connect(_on_wave_ended)
 	else:
 		print("WaveTimerUI: Wave manager not found, trying again...")
 		# Try again after a short delay
 		await get_tree().create_timer(0.5).timeout
 		find_wave_manager()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+# Called every frame. \\\'delta\\\' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if time_left <= 5:
+	if time_left <= 5 and time_left > 0:
 		# Change text color to red
 		label.add_theme_color_override("font_color", Color.RED)
 		
@@ -60,7 +63,7 @@ func _process(delta: float) -> void:
 			shake_tween.play()
 			is_shaking = true
 	else:
-		# Reset color if time goes above 5 (e.g., if time_left is reset)
+		# Reset color if time goes above 5 (e.g., if time_left is reset) or is 0
 		label.remove_theme_color_override("font_color")
 		# Stop shake animation if playing
 		if is_shaking:
@@ -75,7 +78,12 @@ func _on_wave_started(wave_duration: float) -> void:
 
 # Called when the wave time updates
 func _on_wave_time_updated(remaining_time: float) -> void:
-	time_left = int(remaining_time)
+	time_left = int(ceil(remaining_time)) # Convert to int to remove decimal
+	label.text = str(time_left)
+
+# Called when the wave ends (either by enemies defeated or timer timeout)
+func _on_wave_ended() -> void:
+	time_left = 0
 	label.text = str(time_left)
 
 func _on_player_health_changed(new_health: int) -> void:
