@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=3 uid="uid://dyxsar10hoa8j"]
+
+[ext_resource type="Script" uid="uid://bjyjr51wqyq2c" path="res://Enemy/ghost(enemy).gd" id="1_awrlq"]
+[ext_resource type="Texture2D" uid="uid://clu4t23ltalv7" path="res://Enemy/Ghost.png" id="1_oa7oe"]
+[ext_resource type="Script" uid="uid://b2ddws1tbkbvk" path="res://Enemy/ghost.gd" id="2_k2fpk"]
+[ext_resource type="Texture2D" uid="uid://bc16ql26onyjt" path="res://texts/healthbarUnder.png" id="4_jkqs6"]
+[ext_resource type="Texture2D" uid="uid://begfk64w3uw3h" path="res://texts/healthbarProgress.png" id="5_5ucc7"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wst2q"]
+radius = 17.0
+height = 56.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uvnml"]
+radius = 32.0156
+
+[node name="Ghost(enemy)" type="CharacterBody2D" groups=["EnemyGroup"]]
+script = ExtResource("1_awrlq")
+
+[node name="Ghost" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_oa7oe")
+script = ExtResource("2_k2fpk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(6, -2)
+shape = SubResource("CapsuleShape2D_wst2q")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+
+[node name="Navigaion Timer" type="Timer" parent="."]
+
+[node name="DetectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+position = Vector2(6, -2)
+shape = SubResource("CircleShape2D_uvnml")
+debug_color = Color(0.968627, 0, 0.0235294, 0.419608)
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+offset_left = -21.0
+offset_top = -39.0
+offset_right = 43.0
+offset_bottom = 1.0
+scale = Vector2(0.8, 0.8)
+value = 100.0
+texture_under = ExtResource("4_jkqs6")
+texture_progress = ExtResource("5_5ucc7")
+
+[connection signal="timeout" from="Navigaion Timer" to="." method="_on_navigaion_timer_timeout"]
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

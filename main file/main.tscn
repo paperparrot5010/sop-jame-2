@@ -1,12 +1,15 @@
-[gd_scene load_steps=16 format=3 uid="uid://bxhodc2rh8n7a"]
+[gd_scene load_steps=19 format=3 uid="uid://bxhodc2rh8n7a"]
 
+[ext_resource type="Script" uid="uid://dt72u7ow550ma" path="res://main file/main.gd" id="1_58fyy"]
 [ext_resource type="Texture2D" uid="uid://b6qr7q7jrj7ek" path="res://Foozle_2DS0015_Void_EnvironmentPack/Backgrounds/PNGs/Condesed/Starry background  - Layer 01 - Void.png" id="1_ewnu2"]
 [ext_resource type="PackedScene" uid="uid://okmrywtn40ld" path="res://Player/player.tscn" id="2_p4uik"]
 [ext_resource type="PackedScene" uid="uid://cxrn4gkrven02" path="res://border.tscn" id="4_0na6d"]
 [ext_resource type="PackedScene" uid="uid://c3810o6p03cq4" path="res://Machine/unstable_machine.tscn" id="4_ewnu2"]
 [ext_resource type="Texture2D" uid="uid://b2cojfocs1h1o" path="res://Environment/Grass.png" id="4_sd6jy"]
+[ext_resource type="PackedScene" uid="uid://cj4f1mo5sy3gg" path="res://Machine/bomb.tscn" id="6_7np7f"]
 [ext_resource type="Script" uid="uid://d0s27vfeyldq1" path="res://main file/wave_manager.gd" id="6_jhl0g"]
 [ext_resource type="PackedScene" uid="uid://b0bc4nfc0uumy" path="res://Enemy/enemy.tscn" id="7_58fyy"]
+[ext_resource type="PackedScene" uid="uid://dyxsar10hoa8j" path="res://Enemy/ghost(enemy).tscn" id="10_h3whw"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_sd6jy"]
 vertices = PackedVector2Array(6.0625, -1.96094, 1138.89, 1.96094, 737.641, 117.969, 409.93, 119, 11.9219, 856.609, 393.781, 433.969, 1157.57, 812.391, 719.648, 406.773, 1135.15, 372.109, 1138.46, 371.828)
@@ -221,6 +224,7 @@ _data = {
 }
 
 [node name="Main" type="Node2D"]
+script = ExtResource("1_58fyy")
 
 [node name="StarryBackground-Layer01-Void" type="Sprite2D" parent="."]
 position = Vector2(771, 239)
@@ -240,8 +244,46 @@ layer_0/tile_data = PackedInt32Array(196609, 131072, 1, 262145, 131072, 1, 32768
 
 [node name="Borders" parent="." instance=ExtResource("4_0na6d")]
 
-[node name="Unstable machine" parent="." instance=ExtResource("4_ewnu2")]
+[node name="Unstable machine" parent="." node_paths=PackedStringArray("Bomb_spawn_points") instance=ExtResource("4_ewnu2")]
 position = Vector2(578, 414)
+Bomb_scene = ExtResource("6_7np7f")
+Bomb_spawn_points = [NodePath("Bomb spawnPoint1"), NodePath("Bomb spawnPoint2"), NodePath("Bomb spawnPoint3"), NodePath("Bomb spawnPoint4"), NodePath("Bomb spawnPoint5"), NodePath("Bomb spawnPoint6"), NodePath("Bomb spawnPoint7"), NodePath("Bomb spawnPoint8"), NodePath("Bomb spawnPoint9")]
+
+[node name="Bomb spawnPoint1" type="Node2D" parent="Unstable machine"]
+position = Vector2(-109.5, -88)
+scale = Vector2(0.25, 0.25)
+
+[node name="Bomb spawnPoint2" type="Node2D" parent="Unstable machine"]
+position = Vector2(97, -53)
+scale = Vector2(0.25, 0.25)
+
+[node name="Bomb spawnPoint3" type="Node2D" parent="Unstable machine"]
+position = Vector2(93.5, 42)
+scale = Vector2(0.25, 0.25)
+
+[node name="Bomb spawnPoint4" type="Node2D" parent="Unstable machine"]
+position = Vector2(-26.25, 49.25)
+scale = Vector2(0.25, 0.25)
+
+[node name="Bomb spawnPoint5" type="Node2D" parent="Unstable machine"]
+position = Vector2(-97.75, 77.5)
+scale = Vector2(0.25, 0.25)
+
+[node name="Bomb spawnPoint6" type="Node2D" parent="Unstable machine"]
+position = Vector2(-96.25, 24)
+scale = Vector2(0.25, 0.25)
+
+[node name="Bomb spawnPoint7" type="Node2D" parent="Unstable machine"]
+position = Vector2(78.75, 72.25)
+scale = Vector2(0.25, 0.25)
+
+[node name="Bomb spawnPoint8" type="Node2D" parent="Unstable machine"]
+position = Vector2(16.5, 71.25)
+scale = Vector2(0.25, 0.25)
+
+[node name="Bomb spawnPoint9" type="Node2D" parent="Unstable machine"]
+position = Vector2(-32.25, 71.75)
+scale = Vector2(0.25, 0.25)
 
 [node name="Player" parent="." instance=ExtResource("2_p4uik")]
 position = Vector2(574, 526)
@@ -304,29 +346,5 @@ libraries = {
 
 [node name="Timer" type="Timer" parent="CanvasLayer(wave no)"]
 
-[node name="Bomb spawnPoint1" type="Node2D" parent="."]
-position = Vector2(140, 62)
-
-[node name="Bomb spawnPoint2" type="Node2D" parent="."]
-position = Vector2(966, 202)
-
-[node name="Bomb spawnPoint3" type="Node2D" parent="."]
-position = Vector2(952, 582)
-
-[node name="Bomb spawnPoint4" type="Node2D" parent="."]
-position = Vector2(473, 611)
-
-[node name="Bomb spawnPoint5" type="Node2D" parent="."]
-position = Vector2(187, 724)
-
-[node name="Bomb spawnPoint6" type="Node2D" parent="."]
-position = Vector2(193, 510)
-
-[node name="Bomb spawnPoint7" type="Node2D" parent="."]
-position = Vector2(893, 703)
-
-[node name="Bomb spawnPoint8" type="Node2D" parent="."]
-position = Vector2(644, 699)
-
-[node name="Bomb spawnPoint9" type="Node2D" parent="."]
-position = Vector2(449, 701)
+[node name="Ghost(enemy)" parent="." instance=ExtResource("10_h3whw")]
+position = Vector2(333, 497)
