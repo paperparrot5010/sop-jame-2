@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://c3810o6p03cq4"]
+[gd_scene load_steps=28 format=3 uid="uid://c3810o6p03cq4"]
 
 [ext_resource type="Script" uid="uid://b3ep8rtxbv0sl" path="res://static_body_2d.gd" id="1_ocn6s"]
 [ext_resource type="Texture2D" uid="uid://iv50hrpl56ki" path="res://Machine/basic furnace turning on.png" id="2_1qe7b"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cjefa7rrhb8to" path="res://main file/Keyboard Letters and Symbols.png" id="4_ogju5"]
 [ext_resource type="Texture2D" uid="uid://bc16ql26onyjt" path="res://texts/healthbarUnder.png" id="5_oxw2b"]
 [ext_resource type="Texture2D" uid="uid://begfk64w3uw3h" path="res://texts/healthbarProgress.png" id="6_e6ii5"]
+[ext_resource type="Script" uid="uid://pmn6lnw25cvk" path="res://Machine/texture_progress_bar.gd" id="7_e6ii5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ogju5"]
 atlas = ExtResource("2_1qe7b")
@@ -209,16 +210,18 @@ offset_top = -35.75
 offset_right = 40.25
 offset_bottom = 4.25
 scale = Vector2(0.7, 0.7)
+value = 100.0
 texture_under = ExtResource("5_oxw2b")
-texture_over = ExtResource("6_e6ii5")
+texture_progress = ExtResource("6_e6ii5")
+script = ExtResource("7_e6ii5")
 
 [node name="Label" type="Label" parent="."]
-offset_left = -18.0
+offset_left = -29.75
 offset_top = -49.5
-offset_right = 50.0
+offset_right = 83.25
 offset_bottom = -26.5
 scale = Vector2(0.5, 0.5)
-text = "Stability:"
+text = "Stability: 100%"
 
 [node name="Timer" type="Timer" parent="."]
 
