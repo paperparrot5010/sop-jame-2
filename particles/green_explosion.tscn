@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6pma0y5prf45"]
+
+[sub_resource type="Curve" id="Curve_n6cwf"]
+_data = [Vector2(0.00390625, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_74w7l"]
+colors = PackedColorArray(1.3236e-07, 0.342595, 0.0105884, 1, 1, 1, 1, 1)
+
+[node name="Green explosion" type="Node2D"]
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+amount = 50
+explosiveness = 1.0
+lifetime_randomness = 0.5
+fixed_fps = 30
+draw_order = 1
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_max = 218.02
+scale_amount_max = 10.0
+scale_amount_curve = SubResource("Curve_n6cwf")
+color = Color(0, 0.666667, 0, 1)
+color_ramp = SubResource("Gradient_74w7l")

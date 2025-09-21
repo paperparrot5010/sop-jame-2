@@ -1,6 +1,17 @@
 extends CharacterBody2D
 @onready var ghost: Sprite2D = $Ghost
 var damage_amount = 2
+@onready var flash_animation_player: AnimationPlayer = $Flash_AnimationPlayer
+
+# Particle effects
+@export var green_death_particles: PackedScene = preload("res://particles/green_explosion.tscn")
+
+# Crystal dropping
+var crystal_scene = preload("res://Collectabel objects/crystal.tscn")
+
+# Signals
+signal died
+
 # Health properties
 var max_health = 2
 var current_health = max_health
@@ -147,9 +158,14 @@ func _on_navigation_timer_timeout():
 		print("Timer: Updating navigation target to: ", player_target.global_position)
 
 func take_damage(amount: int):
+	flash_animation_player.play("flash-anim")
 	print("Enemy took damage: ", amount)
 	current_health -= amount
 	current_health = max(0, current_health)
+	
+	# EMIT GLOBAL SIGNAL FOR DAMAGE
+	if GlobalSignals.has_signal("enemy_damaged"):
+		GlobalSignals.enemy_damaged.emit()
 	
 	# Update health bar
 	if health_bar:
@@ -167,16 +183,54 @@ func take_damage(amount: int):
 	if current_health <= 0:
 		die()
 
-func _hide_health_bar():
-	if health_bar and current_health > 0:
-		health_bar.visible = false
-
 func die():
-	print("Enemy died")
+	print("Ghost enemy died")
 	velocity = Vector2.ZERO
 	can_move = false
 	is_attacking = false
 	attack_timer.stop()
+	
+	# Create purple explosion particles
+	if green_death_particles:
+		var particle_instance = green_death_particles.instantiate()
+		particle_instance.global_position = global_position
+		
+		# Add to scene first
+		get_tree().current_scene.add_child(particle_instance)
+		
+		# Handle different particle types and configure for one shot
+		if particle_instance is CPUParticles2D:
+			# Configure for one shot emission
+			particle_instance.one_shot = true
+			particle_instance.emitting = true
+			# Auto-destroy after 1 second
+			get_tree().create_timer(1.0).timeout.connect(func(): particle_instance.queue_free())
+			print("CPUParticles2D ghost death effect created (one shot)")
+		elif particle_instance is GPUParticles2D:
+			# Configure for one shot emission
+			particle_instance.one_shot = true
+			particle_instance.emitting = true
+			# Auto-destroy after 1 second
+			get_tree().create_timer(1.0).timeout.connect(func(): particle_instance.queue_free())
+			print("GPUParticles2D ghost death effect created (one shot)")
+		else:
+			print("Unknown particle type: ", particle_instance.get_class())
+			# Fallback: auto-destroy after 1 second
+			get_tree().create_timer(1.0).timeout.connect(func(): particle_instance.queue_free())
+	else:
+		print("ERROR: purple_death_particles not loaded for ghost!")
+	
+	# Emit died signal for wave manager
+	died.emit()
+	
+	# EMIT GLOBAL SIGNAL FOR DEATH
+	if GlobalSignals.has_signal("enemy_killed"):
+		GlobalSignals.enemy_killed.emit()
+	
+	# Drop crystal (check if wave ended by timeout like regular enemy)
+	var wave_manager = get_meta("wave_manager", null)
+	if wave_manager == null or not wave_manager.did_wave_end_by_timeout():
+		drop_crystal()
 	
 	if health_bar:
 		health_bar.visible = false
@@ -187,7 +241,16 @@ func die():
 	else:
 		await get_tree().create_timer(0.1).timeout
 	
-	queue_free()
+		queue_free()
+
+func _hide_health_bar():
+	if health_bar and current_health > 0:
+		health_bar.visible = false
+
+func drop_crystal():
+	var crystal_instance = crystal_scene.instantiate()
+	get_parent().add_child(crystal_instance)
+	crystal_instance.global_position = global_position
 
 func _on_detection_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group("PlayerGroup"):

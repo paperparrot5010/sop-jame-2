@@ -1,0 +1,61 @@
+[gd_scene load_steps=2 format=3 uid="uid://bf1yglm8moojw"]
+
+[ext_resource type="Script" uid="uid://ban2hdn7gvbod" path="res://Win folder/quit_button.gd" id="1_q7ekr"]
+
+[node name="Winning" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0987284, 0.0987284, 0.0987284, 1)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -89.0
+offset_top = -58.0
+offset_right = 140.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[shake]You won"
+fit_content = true
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 422.0
+offset_right = 353.0
+offset_bottom = 530.0
+theme_override_font_sizes/font_size = 30
+text = "Main menu"
+
+[node name="Quit button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 700.0
+offset_top = 422.0
+offset_right = 873.0
+offset_bottom = 530.0
+theme_override_font_sizes/font_size = 30
+text = "Quit
+"
+script = ExtResource("1_q7ekr")
+
+[connection signal="mouse_entered" from="Quit button" to="Quit button" method="_on_mouse_entered"]

@@ -4,7 +4,7 @@ extends CharacterBody2D
 @onready var damage_timer: Timer = $"damage timer"
 @onready var slime: Sprite2D = $Slime
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-
+@export var purple_death_particles: PackedScene = preload("res://particles/purple_explosion.tscn")
 signal died
 
 @export var speed = 65.0
@@ -79,12 +79,49 @@ func _physics_process(_delta: float) -> void:
 
 func take_damage(amount):
 	health -= amount
+	# EMIT GLOBAL SIGNAL FOR DAMAGE
+	if GlobalSignals.has_signal("enemy_damaged"):
+		GlobalSignals.enemy_damaged.emit()
 	if health <= 0:
 		die()
 
 func die():
+	# Create purple explosion particles
+	if purple_death_particles:
+		var particle_instance = purple_death_particles.instantiate()
+		particle_instance.global_position = global_position
+		
+		# Add to scene first
+		get_tree().current_scene.add_child(particle_instance)
+		
+		# Handle different particle types and configure for one shot
+		if particle_instance is CPUParticles2D:
+			# Configure for one shot emission
+			particle_instance.one_shot = true
+			particle_instance.emitting = true
+			# Auto-destroy after 1 second
+			get_tree().create_timer(1.0).timeout.connect(func(): particle_instance.queue_free())
+			print("CPUParticles2D death effect created (one shot)")
+		elif particle_instance is GPUParticles2D:
+			# Configure for one shot emission
+			particle_instance.one_shot = true
+			particle_instance.emitting = true
+			# Auto-destroy after 1 second
+			get_tree().create_timer(1.0).timeout.connect(func(): particle_instance.queue_free())
+			print("GPUParticles2D death effect created (one shot)")
+		else:
+			print("Unknown particle type: ", particle_instance.get_class())
+			# Fallback: auto-destroy after 1 second
+			get_tree().create_timer(1.0).timeout.connect(func(): particle_instance.queue_free())
+	else:
+		print("ERROR: purple_death_particles not loaded!")
 	animation_player.play("hit-Flash")
 	died.emit()
+	
+	# EMIT GLOBAL SIGNAL FOR DEATH
+	if GlobalSignals.has_signal("enemy_killed"):
+		GlobalSignals.enemy_killed.emit()
+	
 	print("Enemy died!")
 	
 	# Check if wave ended by timeout before dropping crystal
@@ -94,8 +131,41 @@ func die():
 	
 	queue_free()
 
-# New function to die without dropping crystal
 func die_without_crystal():
+	# Create purple explosion particles
+	if purple_death_particles:
+		var particle_instance = purple_death_particles.instantiate()
+		particle_instance.global_position = global_position
+		
+		# Add to scene first
+		get_tree().current_scene.add_child(particle_instance)
+		
+		# Handle different particle types and configure for one shot
+		if particle_instance is CPUParticles2D:
+			# Configure for one shot emission
+			particle_instance.one_shot = true
+			particle_instance.emitting = true
+			# Auto-destroy after 1 second
+			get_tree().create_timer(1.0).timeout.connect(func(): particle_instance.queue_free())
+			print("CPUParticles2D death effect created (no crystal, one shot)")
+		elif particle_instance is GPUParticles2D:
+			# Configure for one shot emission
+			particle_instance.one_shot = true
+			particle_instance.emitting = true
+			# Auto-destroy after 1 second
+			get_tree().create_timer(1.0).timeout.connect(func(): particle_instance.queue_free())
+			print("GPUParticles2D death effect created (no crystal, one shot)")
+		else:
+			print("Unknown particle type: ", particle_instance.get_class())
+			# Fallback: auto-destroy after 1 second
+			get_tree().create_timer(1.0).timeout.connect(func(): particle_instance.queue_free())
+	else:
+		print("ERROR: purple_death_particles not loaded!")
+	
+	# EMIT GLOBAL SIGNAL FOR DEATH (EVEN WITHOUT CRYSTAL)
+	if GlobalSignals.has_signal("enemy_killed"):
+		GlobalSignals.enemy_killed.emit()
+	
 	died.emit()
 	print("Enemy died without dropping crystal!")
 	queue_free()

@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://p27j1he4edop"]
+
+[ext_resource type="Script" uid="uid://begtal2th80eh" path="res://Player/pivot_gun.gd" id="1_4xe4a"]
+[ext_resource type="Texture2D" uid="uid://d3uehaqagia53" path="res://Player/Pistol.png" id="1_jo8bj"]
+[ext_resource type="Script" uid="uid://cthsjicfex1x0" path="res://Player/the_pistol.gd" id="2_4xe4a"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mag82"]
+radius = 3.0
+
+[node name="Weapon1 scene" type="Node2D"]
+
+[node name="Pivot gun" type="Node2D" parent="."]
+script = ExtResource("1_4xe4a")
+
+[node name="the pistol" type="Area2D" parent="Pivot gun"]
+script = ExtResource("2_4xe4a")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Pivot gun/the pistol"]
+shape = SubResource("CircleShape2D_mag82")
+
+[node name="Pistol" type="Sprite2D" parent="Pivot gun/the pistol"]
+position = Vector2(1.42857, 3.85714)
+rotation = 0.0872665
+scale = Vector2(0.0693925, 0.05)
+texture = ExtResource("1_jo8bj")
+
+[node name="Node2D" type="Node2D" parent="Pivot gun/the pistol"]
+position = Vector2(21, 0)
+
+[node name="Camera2D" type="Camera2D" parent="."]

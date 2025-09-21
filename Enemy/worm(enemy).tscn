@@ -1,9 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://cl5evdep2rmyf"]
+[gd_scene load_steps=9 format=3 uid="uid://cl5evdep2rmyf"]
 
 [ext_resource type="Texture2D" uid="uid://b3m5uvpv7jv5y" path="res://Enemy/New worm.png" id="1_3dh00"]
+[ext_resource type="Script" uid="uid://di257d0vpurvw" path="res://Enemy/worm(enemy).gd" id="1_h4y7d"]
 [ext_resource type="Script" uid="uid://b4by735g4hsrx" path="res://Enemy/sprite_2d.gd" id="2_xqb3l"]
+[ext_resource type="Texture2D" uid="uid://bc16ql26onyjt" path="res://texts/healthbarUnder.png" id="4_mrc61"]
+[ext_resource type="Texture2D" uid="uid://begfk64w3uw3h" path="res://texts/healthbarProgress.png" id="6_sf7a5"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xqb3l"]
+radius = 7.0
+height = 56.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_h4y7d"]
+radius = 6.0
+height = 26.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mrc61"]
+radius = 15.0
 
 [node name="Worm(enemy)" type="CharacterBody2D" groups=["EnemyGroup"]]
+script = ExtResource("1_h4y7d")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.1, 0.1)
@@ -11,3 +26,28 @@ texture = ExtResource("1_3dh00")
 script = ExtResource("2_xqb3l")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 7)
+shape = SubResource("CapsuleShape2D_xqb3l")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+position = Vector2(-16, 28)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_h4y7d")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
+position = Vector2(5, -12)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_mrc61")
+
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(26, -10)
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+offset_left = -20.0
+offset_top = -38.0
+offset_right = 44.0
+offset_bottom = 2.0
+scale = Vector2(0.8, 0.8)
+value = 100.0
+texture_under = ExtResource("4_mrc61")
+texture_progress = ExtResource("6_sf7a5")

@@ -1,7 +1,7 @@
 extends Sprite2D
 
 # Animation variables
-var original_scale = Vector2(0.2, 0.2) # User-specified original scale
+var original_scale = Vector2(0.1, 0.1) # User-specified original scale
 var animation_speed = 1.5 # Speed of the squish/stretch animation
 var animation_intensity = 0.15 # Intensity of the squish/stretch effect
 var current_animation_time = 0.0

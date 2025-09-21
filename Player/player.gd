@@ -1,5 +1,5 @@
-
 extends CharacterBody2D
+@onready var camera_2d: Camera2D = $Camera2D
 
 @onready var stabilizing_the_machine: CanvasLayer = $"stabilizing the machine"
 @onready var button: Button = $"stabilizing the machine/Panel/Button"
@@ -10,6 +10,7 @@ signal health_changed(new_health: int) # Signal to announce health changes in pl
 var bullet_path = preload("res://Player/bullet2.tscn")
 var speed = 200
 @export var health = 10
+var max_health = 10  # Track maximum health (increases by 5 each wave)
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 
 # Animation variables
@@ -30,6 +31,18 @@ var is_near_machine: bool = false
 var machine_ui_visible: bool = false
 var current_machine_area: Area2D = null
 
+# Camera shake variables
+var camera_shake_intensity: float = 0.0
+var camera_shake_duration: float = 0.0
+var camera_original_position: Vector2
+var is_camera_shaking: bool = false
+
+# Camera shake presets
+var DAMAGE_SHAKE_INTENSITY: float = 1.5
+var DAMAGE_SHAKE_DURATION: float = 0.2
+var KILL_SHAKE_INTENSITY: float = 2.5
+var KILL_SHAKE_DURATION: float = 0.3
+
 func _ready():
 	print("Player script loaded")
 	animated_sprite_2d.scale = original_scale
@@ -44,7 +57,10 @@ func _ready():
 
 	if button:
 		button.disabled = true
-		print("Button found and disabled")
+		# Connect the button's pressed signal to the stabilizing machine's handler
+		if not button.pressed.is_connected(stabilizing_the_machine._on_button_pressed):
+			button.pressed.connect(stabilizing_the_machine._on_button_pressed)
+		print("Button found, disabled, and connected")
 	else:
 		print("ERROR: Button not found at path: stabilizing the machine/Panel/Button")
 	
@@ -58,6 +74,17 @@ func _ready():
 		print("Area2D signals connected")
 	else:
 		print("ERROR: Area2D node not found")
+	
+	# Setup camera shake system
+	if camera_2d:
+		camera_original_position = camera_2d.position
+		print("Camera2D found and shake system initialized")
+	else:
+		print("ERROR: Camera2D not found - camera shake will not work")
+	
+	# Connect to enemy damage/death signals
+	GlobalSignals.enemy_damaged.connect(_on_enemy_damaged)
+	GlobalSignals.enemy_killed.connect(_on_enemy_killed)
 
 func _physics_process(delta: float) -> void:
 	# Stop all processing if the player is dead
@@ -80,6 +107,9 @@ func _physics_process(delta: float) -> void:
 
 	velocity = input_direction.normalized() * speed
 	move_and_slide()
+
+	# Update camera shake
+	update_camera_shake(delta)
 
 	# Handle machine interaction - check for both "Interact" and "ui_accept" (E key)
 	if is_near_machine:
@@ -232,9 +262,63 @@ func _on_area_2d_area_exited(area: Area2D) -> void:
 		if machine_ui_visible:
 			close_machine_ui()
 		print("Player left machine area")
-		
-		
 
+# Health management functions for wave progression
+func increase_max_health_for_new_wave():
+	# Increase max health by 5 for the new wave
+	max_health += 5
+	health = max_health  # Also restore to full health
+	emit_signal("health_changed", health)
+	print("New wave! Max health increased to: ", max_health, ", health restored to: ", health)
 
-func _on_button_pressed() -> void:
-	pass # Replace with function body.
+func restore_health_after_wave():
+	# Restore health to maximum after completing a wave
+	health = max_health
+	emit_signal("health_changed", health)
+	print("Wave completed! Health restored to: ", health, "/", max_health)
+
+func get_max_health() -> int:
+	return max_health
+
+func get_current_health() -> int:
+	return health
+
+# Camera shake functions
+func update_camera_shake(delta: float) -> void:
+	if camera_shake_duration > 0 and camera_2d:
+		camera_shake_duration -= delta
+		
+		# Calculate shake offset using noise for more natural feel
+		var shake_offset = Vector2(
+			randf_range(-1.0, 1.0) * camera_shake_intensity,
+			randf_range(-1.0, 1.0) * camera_shake_intensity
+		)
+		
+		camera_2d.position = camera_original_position + shake_offset
+		
+		# When shake is over, reset camera position
+		if camera_shake_duration <= 0:
+			camera_2d.position = camera_original_position
+			is_camera_shaking = false
+
+func trigger_camera_shake(intensity: float, duration: float) -> void:
+	if not camera_2d:
+		print("Camera2D not found for shake")
+		return
+		
+	camera_shake_intensity = intensity
+	camera_shake_duration = duration
+	is_camera_shaking = true
+	camera_original_position = camera_2d.position  # Update original position in case camera moved
+	print("Camera shake triggered: intensity=", intensity, ", duration=", duration)
+
+# Signal handlers for enemy events
+func _on_enemy_damaged() -> void:
+	# Trigger a small camera shake when an enemy is damaged
+	trigger_camera_shake(DAMAGE_SHAKE_INTENSITY, DAMAGE_SHAKE_DURATION)
+	print("Camera shake triggered: enemy damaged")
+
+func _on_enemy_killed() -> void:
+	# Trigger a larger camera shake when an enemy is killed
+	trigger_camera_shake(KILL_SHAKE_INTENSITY, KILL_SHAKE_DURATION)
+	print("Camera shake triggered: enemy killed")

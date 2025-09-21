@@ -24,7 +24,6 @@ theme_override_font_sizes/font_size = 40
 autostart = true
 
 [node name="Label2" type="Label" parent="."]
-visible = false
 offset_right = 196.0
 offset_bottom = 55.0
 theme_override_font_sizes/font_size = 40
@@ -49,11 +48,11 @@ region_enabled = true
 region_rect = Rect2(0, 0, 32, 32)
 
 [node name="Crystal_label" type="Label" parent="."]
-offset_left = 1021.0
+offset_left = 1015.0
 offset_top = 48.0
-offset_right = 1061.0
+offset_right = 1055.0
 offset_bottom = 90.0
 theme_override_font_sizes/font_size = 30
-text = "0"
+text = "0X"
 
 [connection signal="timeout" from="TimerFortimeLeft" to="." method="_on_timer_fortime_left_timeout"]

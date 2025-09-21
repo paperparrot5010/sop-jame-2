@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://cim2csornl70c"]
+
+[ext_resource type="Texture2D" uid="uid://dlr0s50vwxsr1" path="res://Enemy/Worm lazer.png" id="1_albvq"]
+[ext_resource type="Script" uid="uid://dfdqrgj80jpao" path="res://Enemy/worm_lazer.gd" id="1_v70c6"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v70c6"]
+radius = 4.12311
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jgh58"]
+radius = 5.0
+
+[node name="Worm_lazer" type="CharacterBody2D"]
+script = ExtResource("1_v70c6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(3, 0)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_albvq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_v70c6")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_jgh58")
+debug_color = Color(0.972549, 0, 0.12549, 0.419608)
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

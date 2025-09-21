@@ -11,7 +11,7 @@ shader_parameter/enebled = false
 shader_parameter/tint = Color(1, 1, 1, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eqilm"]
-size = Vector2(21.3333, 37.3333)
+size = Vector2(21.3333, 22)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_am0pq"]
 atlas = ExtResource("2_px1sc")
@@ -69,7 +69,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_am0pq"]
-radius = 110.725
+radius = 50.04
 
 [sub_resource type="Animation" id="Animation_ncf7h"]
 length = 0.001
@@ -119,7 +119,7 @@ scale = Vector2(0.2, 0.2)
 texture = ExtResource("3_eqilm")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(8, -22)
+position = Vector2(-2, -13)
 scale = Vector2(3, 3)
 shape = SubResource("RectangleShape2D_eqilm")
 
@@ -137,7 +137,7 @@ animation = &"Attack"
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(4, -22)
+position = Vector2(0, -16)
 shape = SubResource("CircleShape2D_am0pq")
 debug_color = Color(1, 0, 0, 0.419608)
 

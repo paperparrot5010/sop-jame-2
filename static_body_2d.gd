@@ -24,6 +24,7 @@ var stabilizing_points = 0
 
 func _ready() -> void:
 	GlobalSignals.crystal_collected.connect(_on_crystal_collected)
+	GlobalSignals.machine_stabilized.connect(_on_machine_stabilized)
 
 	timer.start()
 	control_node = get_tree().get_first_node_in_group("ControlGroup")
@@ -129,3 +130,22 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 func _on_crystal_collected():
 	stabilizing_points += 1
 	pass
+
+func _on_machine_stabilized(amount: int):
+	stability += amount
+	stability = clamp(stability, 0, 100)
+	
+	print("Machine stabilized by ", amount, "! New stability: ", stability)
+	
+	# Update the progress bar and label
+	if texture_progress_bar:
+		texture_progress_bar.value = stability
+		texture_progress_bar.queue_redraw()
+	
+	if stability_label:
+		stability_label.text = "Stability: " + str(stability) + "%"
+	
+	# Stop bomb spawning if stability is now above 50
+	if stability > 50 and should_spawn_bombs:
+		should_spawn_bombs = false
+		bomb_spawn_timer.stop()

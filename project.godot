@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Unstalble Crystal"
-run/main_scene="uid://bxhodc2rh8n7a"
+run/main_scene="uid://ctg5c88h26aso"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 

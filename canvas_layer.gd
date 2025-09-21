@@ -20,7 +20,10 @@ func _ready() -> void:
 	var player_node = get_tree().get_first_node_in_group("PlayerGroup")
 	if player_node:
 		player_node.health_changed.connect(_on_player_health_changed)
-		label_2.text = "Health: " + str(player_node.health)
+		# Show current/max health format
+		var current_health = player_node.get_current_health() if player_node.has_method("get_current_health") else player_node.health
+		var max_health = player_node.get_max_health() if player_node.has_method("get_max_health") else player_node.health
+		label_2.text = "Health: " + str(current_health) + "/" + str(max_health)
 	else:
 		label_2.text = "Health: N/A"
 	
@@ -91,7 +94,13 @@ func _on_wave_ended() -> void:
 	label.text = str(time_left)
 
 func _on_player_health_changed(new_health: int) -> void:
-	label_2.text = "Health: " + str(new_health)
+	# Get the player's max health to show current/max format
+	var player_node = get_tree().get_first_node_in_group("PlayerGroup")
+	if player_node and player_node.has_method("get_max_health"):
+		var max_health = player_node.get_max_health()
+		label_2.text = "Health: " + str(new_health) + "/" + str(max_health)
+	else:
+		label_2.text = "Health: " + str(new_health)
 
 func add_crystal():
 	crystals += 1
@@ -100,3 +109,13 @@ func add_crystal():
 func _on_crystal_collected():
 	print("CCCCCCCCCCCCCCCCCCCCCCCCccCCCCCCCC")
 	add_crystal()
+
+func consume_crystals(amount: int) -> bool:
+	if crystals >= amount:
+		crystals -= amount
+		crystal_label.text = str(crystals) + "X"
+		return true
+	return false
+
+func get_crystals() -> int:
+	return crystals

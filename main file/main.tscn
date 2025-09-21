@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bxhodc2rh8n7a"]
+[gd_scene load_steps=20 format=3 uid="uid://bxhodc2rh8n7a"]
 
 [ext_resource type="Script" uid="uid://dt72u7ow550ma" path="res://main file/main.gd" id="1_58fyy"]
 [ext_resource type="Texture2D" uid="uid://b6qr7q7jrj7ek" path="res://Foozle_2DS0015_Void_EnvironmentPack/Backgrounds/PNGs/Condesed/Starry background  - Layer 01 - Void.png" id="1_ewnu2"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://d0s27vfeyldq1" path="res://main file/wave_manager.gd" id="6_jhl0g"]
 [ext_resource type="PackedScene" uid="uid://b0bc4nfc0uumy" path="res://Enemy/enemy.tscn" id="7_58fyy"]
 [ext_resource type="PackedScene" uid="uid://dyxsar10hoa8j" path="res://Enemy/ghost(enemy).tscn" id="10_h3whw"]
+[ext_resource type="PackedScene" uid="uid://cl5evdep2rmyf" path="res://Enemy/worm(enemy).tscn" id="11_bkp0m"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_sd6jy"]
 vertices = PackedVector2Array(6.0625, -1.96094, 1138.89, 1.96094, 737.641, 117.969, 409.93, 119, 11.9219, 856.609, 393.781, 433.969, 1157.57, 812.391, 719.648, 406.773, 1135.15, 372.109, 1138.46, 371.828)
@@ -293,6 +294,7 @@ script = ExtResource("6_jhl0g")
 enemy_scene = ExtResource("7_58fyy")
 spawn_points = [NodePath("../SpawnPoint1"), NodePath("../SpawnPoint2"), NodePath("../SpawnPoint3"), NodePath("../SpawnPoint4"), NodePath("../SpawnPoint5"), NodePath("../SpawnPoint6"), NodePath("../SpawnPoint7"), NodePath("../SpawnPoint8"), NodePath("../SpawnPoint9")]
 ghost_scene = ExtResource("10_h3whw")
+worm_scene = ExtResource("11_bkp0m")
 
 [node name="SpawnPoint1" type="Node2D" parent="."]
 position = Vector2(285, 432)

@@ -1,9 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://okmrywtn40ld"]
+[gd_scene load_steps=20 format=3 uid="uid://okmrywtn40ld"]
 
 [ext_resource type="Script" uid="uid://dtk1oas6y7lbo" path="res://Player/player.gd" id="1_4ntmi"]
 [ext_resource type="Texture2D" uid="uid://cx5752bo22o82" path="res://Player/angre(idle).png" id="2_4ntmi"]
 [ext_resource type="PackedScene" uid="uid://cubvmosq7q1tg" path="res://Player/sword.tscn" id="3_btcbx"]
 [ext_resource type="PackedScene" uid="uid://cyuy8pt16hn1n" path="res://texts/canvas_layer.tscn" id="4_gwnis"]
+[ext_resource type="Script" uid="uid://bqliflwitiut5" path="res://Player/stabilizing_the_machine.gd" id="5_k53q1"]
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_gwnis"]
 output_port_for_preview = 0
@@ -158,6 +159,7 @@ position = Vector2(0, 13)
 [node name="CanvasLayer" parent="." instance=ExtResource("4_gwnis")]
 
 [node name="stabilizing the machine" type="CanvasLayer" parent="."]
+script = ExtResource("5_k53q1")
 
 [node name="Panel" type="Panel" parent="stabilizing the machine"]
 anchors_preset = 15
@@ -218,5 +220,6 @@ text = "Stabilize"
 shape = SubResource("CircleShape2D_gwnis")
 debug_color = Color(0.408348, 0.601729, 0.230341, 0.42)
 
+[connection signal="pressed" from="stabilizing the machine/Panel/Button" to="stabilizing the machine" method="_on_button_pressed"]
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
 [connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]
