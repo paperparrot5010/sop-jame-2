@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://dk3klxoawex04"]
+[gd_scene load_steps=7 format=3 uid="uid://dk3klxoawex04"]
 
 [ext_resource type="Script" uid="uid://kqasy8hnt32e" path="res://Player/bullet_2.gd" id="1_hvvto"]
 [ext_resource type="Texture2D" uid="uid://b1cxpkx0i0f55" path="res://icon.svg" id="1_repfj"]
 [ext_resource type="Shader" uid="uid://b7i2msvqh0h2h" path="res://Player/bullet2.gdshader" id="2_3i201"]
-[ext_resource type="PackedScene" uid="uid://cb4q6ksvgsuyh" path="res://Collectabel objects/crystal.tscn" id="2_ahnqb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5r84k"]
 shader = ExtResource("2_3i201")
@@ -16,7 +15,6 @@ size = Vector2(12, 4)
 
 [node name="Bullet" type="CharacterBody2D"]
 script = ExtResource("1_hvvto")
-crystal_scene = ExtResource("2_ahnqb")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_5r84k")
